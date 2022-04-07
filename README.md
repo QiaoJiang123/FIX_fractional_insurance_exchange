@@ -22,8 +22,11 @@ In addition, some optional roles could largely faciliate the process:
 * Compliance Checker
 * Insurance Brokerage
 
+### Insured
+
+
  
 
 ## FIX Token
 
-FIX token is an ERC20 token. The token is awarded to all participants in FIX
+FIX token is an ERC20 token. The token is needed for all roles to perform in the exchange.
