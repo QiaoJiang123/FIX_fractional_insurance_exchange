@@ -19,6 +19,7 @@ There are 4 roles required for FIX to operate:
 * Insurer
 * Identification Verifier
 * Accident Verifier
+* Loss Verifier
 
 In addition, some optional roles could largely faciliate the process:
 * Data Service Provider
@@ -28,11 +29,17 @@ In addition, some optional roles could largely faciliate the process:
 * Compliance Checker
 * Insurance Brokerage
 
-The first 4 roles must have their own smart contracts interacting with each other to complete a full cycle of an insurance policy.
+The first 5 roles must have their own smart contracts interacting with each other to complete a full cycle of an insurance policy.
 
 This project starts with trip delay insurance, especially flight delay insurance due to the simplicity of accident verification and risk modeling.
 
-For other lines of business
+For other lines of business such as auto insurance and life insurance, more complicated processing is needed for verification part. But, as AI and autonomous dirving become more prevailing, determining accident and ultimate loss would be sorted out along the way.
+
+To go even further, one major branch of participants in fractional insurance industry would be the ones with Internet of Things (IoT) data.
+
+For traditional corporate insurers, they could join the exchange just as individual insurers. Or they could provide micro-reinsurance to individual insurers since for some lines of business, the ultimate loss could be extreme and individual insurers may need excess insurance from large financial entities.
+
+Overall, the fractional insurance exchange introduces non-traditional roles for participants and welcome new joiners to the insurance industry.
 
 ### Insured
 
