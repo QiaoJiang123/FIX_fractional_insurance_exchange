@@ -41,11 +41,31 @@ For traditional corporate insurers, they could join the exchange just as individ
 
 Overall, the fractional insurance exchange introduces non-traditional roles for participants and welcome new joiners to the insurance industry.
 
+The following sub sections introduce each role in detail.
+
 ### Insured
 
+### Insurer
 
+### Identification Verifier
+
+### Accident Verifier
+
+### Loss Verifier
  
 
 ## FIX Token
 
-FIX token is an ERC20 token. The token is needed for all roles to perform in the exchange.
+FIX token is an ERC20 token for this project. The token is needed for all roles to perform in the exchange.
+
+There are several use cases:
+1. Bidding insurance polices
+2. Use verification services
+
+### Use Case 1: Bidding Insurance Policies
+
+When an insured requests an insurance policy via deploying a smart contract, everyone on the chain could become an insurer and collects some premium.
+
+This puts individual insurers in a disadvantageous position since corporate entities are more likely to have faster internet and response as soon as the request is sent. Also, to prevent certain insurers from utilizing the exchange for fund raising as premium is paid first, a fee is needed for them to participate in bidding the request. The fee is paid in FIX token. 
+
+In other words, there are two rounds for an insurer to insure a policy. First, the insurer must win a lottery to particpate in an auction. There may be multiple winners. The fee is associated with the winning likelihood. The more fees paid, the more likely an insurer has the chance to insure the insurance policy. The smart contract will request a random number from another source, such as Chainlink, to determine which insurers have chances to bid. In the second round, the insurer needs to propose a quote for the insurance policy. The insurers with the cheapest quotes will be chosen.
