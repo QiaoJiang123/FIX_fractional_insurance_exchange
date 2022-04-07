@@ -17,7 +17,7 @@ The following sections dig into more details.
 There are 5 roles required for FIX to operate:
 * Insured
 * Insurer
-* Identification Verifier
+* Eligibility Verifier
 * Accident Verifier
 * Loss Verifier
 
@@ -47,7 +47,7 @@ The following sub sections introduce each role in detail.
 
 ### Insurer
 
-### Identification Verifier
+### Eligibility Verifier
 
 ### Accident Verifier
 
