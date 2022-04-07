@@ -14,7 +14,7 @@ The following sections dig into more details.
 
 ## Roles in FIX
 
-There are 4 roles required for FIX to operate:
+There are 5 roles required for FIX to operate:
 * Insured
 * Insurer
 * Identification Verifier
