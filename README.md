@@ -45,6 +45,8 @@ The following sub sections introduce each role in detail.
 
 ### Insured
 
+An insured
+
 ### Insurer
 
 ### Eligibility Verifier
