@@ -45,7 +45,9 @@ The following sub sections introduce each role in detail.
 
 ### Insured
 
-An insured
+An insured can be anyone who needs an insurance from the blockchain. It is the start of an insurance contract. FIXInsured.sol contains all the functions for an insured.
+
+An insured needs to deploy a new smart contract using FIXInsured.sol to initialize an insurance process.
 
 ### Insurer
 
