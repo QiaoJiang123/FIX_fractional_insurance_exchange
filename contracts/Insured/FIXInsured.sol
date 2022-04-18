@@ -14,14 +14,31 @@ ACTIVE_POLICY: Policy is effective
 ACCIDENT_VERIFIED: An accident occurs and is verified by Accident Verifier.
 CLOSED: Policy is closed
 
+eligibility_verifier: an array of payable addresses which could provide eligibility verification with certain fees.
+
 Functions to include:
+
+setInsurerCondition
+
+setEligibilityVerifier:
+    This function allows the insured to list the eligibility verifiers needed for this contract.
+verifyEligibility: (Done)
+setAccidentVerifier
+
+setLossVerifier:
+
+addInsurerCandidate
+
+pickInsurerLottery
 
 
 
 
 */
 
-contract FIXInsurer {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract FIXInsurer is Ownable {
     enum POLICY_STATE {
         OPEN_UNVERIFIED,
         OPEN_VERIFIED,
@@ -29,5 +46,34 @@ contract FIXInsurer {
         ACTIVE_POLICY,
         ACCIDENT_VERIFIED,
         CLOSED
+    }
+
+    address payable[] public eligibilityVerifier;
+    address payable[] public AccidentVerifier;
+    mapping(address => bool) public eligibilityVerifierResult;
+    POLICY_STATE public policy_state;
+
+    function setEligibilityVerifier(
+        address payable[] memory _eligibilityVerifier
+    ) public onlyOwner {
+        require(
+            policy_state == POLICY_STATE.OPEN_UNVERIFIED,
+            "Can't change Eligibility Verifier at this stage!"
+        );
+        for (uint256 i = 0; i < _eligibilityVerifier.length; i++) {
+            eligibilityVerifier.push(_eligibilityVerifier[i]);
+        }
+    }
+
+    function verifyEligibility(bool _verificationDummy) public {
+        require(
+            policy_state == POLICY_STATE.OPEN_UNVERIFIED,
+            "Can't change Eligibility Verification at this stage!"
+        );
+        for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
+            if (msg.sender == eligibilityVerifier[i]) {
+                eligibilityVerifierResult[msg.sender] = _verificationDummy;
+            }
+        }
     }
 }
