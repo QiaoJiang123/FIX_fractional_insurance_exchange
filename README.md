@@ -47,7 +47,7 @@ The following sub sections introduce each role in detail.
 
 An insured can be anyone who needs an insurance from the blockchain. It is the start of an insurance contract. FIXInsured.sol contains all the functions for an insured.
 
-An insured needs to deploy a new smart contract using FIXInsured.sol to initialize an insurance process.
+An insured needs to deploy a new smart contract using FIXInsured.sol to initialize an insurance process. 
 
 ### Insurer
 
@@ -73,3 +73,14 @@ When an insured requests an insurance policy via deploying a smart contract, eve
 This puts individual insurers in a disadvantageous position since corporate entities are more likely to have faster internet and response as soon as the request is sent. Also, to prevent certain insurers from utilizing the exchange for fund raising as premium is paid first, a fee is needed for them to participate in bidding the request. The fee is paid in FIX token. 
 
 In other words, there are two rounds for an insurer to insure a policy. First, the insurer must win a lottery to particpate in an auction. There may be multiple winners. The fee is associated with the winning likelihood. The more fees paid, the more likely an insurer has the chance to insure the insurance policy. The smart contract will request a random number from another source, such as Chainlink, to determine which insurers have chances to bid. In the second round, the insurer needs to propose a quote for the insurance policy. The insurers with the cheapest quotes will be chosen.
+
+### Use Case 2: Service Fee
+
+Unlike traditional insurance business model which is BtoC, the participants in this fractional insurance exchange need more services than ever. It is due to more uncertainties resulting from lack of information. The missing information includes but not limited to:
+1. Characteristics of insured
+2. Characteristics of insurer
+3. Risk frequency and severity distribution
+4. Correlations among covered risks
+5. Accident occurrence, etc.
+
+Some types of the missing information are resolved by corporate insurers such as 1, 3, 4, 5. Some are just new to current participants such as 2.
