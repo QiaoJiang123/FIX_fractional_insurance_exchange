@@ -64,15 +64,29 @@ transfer. That means one party must have some existing risk before entering an i
 
 Eligibility verification ensures that the smart contract is an insurance policy. For example, for flight delay insurance, the insured must be the flight ticket holder to buy a flight delay insurance for his or her flight.
 
+In FIX, the insured has the responsibility to appoint eligibility verifier(s). There could be multiple eligibility verifiers just to ensure the accuracy of verification.
 
+One natural question is what if the appointed eligibility verifier does not provide true information and trick insurers to provide insurance. This problem could be resolved by browsing the verification history of the verifier or by appointing corporate eligibility verifier with high reputation. Note that insurers have the choice to provide insurance or not based on the insureds' appointment. In other words, it is a game between insureds and insurers. Both parties are playing strategically.
 
 ### Accident Verifier
 
+When an insurance contract is agreed by insured and insurer(s), the next step is to verify if an accident occurs before the expiration date. Since Ethereum cannot 'access the internet' directly (so does api services), some node needs to notify the smart contract about any accident occurence. This is where accident verifier plays a role. For example, for flight delay insurance, it needs a node to verify whether the flight is delayed or not. If the flight delayed, insurers will transfer loss to insured directly. Otherwise, the insurance will be closed.
+
+It is also the insured's responsibility to appoint accident verifier(s).
+
 ### Loss Verifier
+
+For some LOB such as auto insurance, verifiying accident is not enough. Loss amount needs to be determined for final payment. At current stage, the project only focuses on flight delay insurance. We will circle back to other insurance later. 
 
 ### Data Service Provider
 
+Data Service Provider is not required in the smart contract. However, it is an important player in FIX since both insureds and insurers are individuals now. They do not have enough data to start an insurance policy. For example, for flight delay insurance, both insureds and insurers need to know the odds for the premium and reserves. Moreover, for insurers, they need to know the multi-variable distributions among flights to find the best insurance policy portfolio, just like how people invest stocks. Another type of data needed maybe the characteristic of insureds. It may not be PII but it could be a score to indicate the riskiness of the insured based on his or her insurance history.
+
+There are much more scenarios for the need of data service.
+
 ### Compliance Checker
+
+
 
 ### Insurance Brokerage
 
