@@ -47,16 +47,29 @@ The following sub sections introduce each role in detail.
 
 An insured can be anyone who needs an insurance from the blockchain. It is the start of an insurance contract. FIXInsured.sol contains all the functions for an insured.
 
-An insured needs to deploy a new smart contract using FIXInsured.sol to initialize an insurance process. 
+An insured needs to deploy a new smart contract using FIXInsured.sol to initialize an insurance process. It is also the insured's responsibility to appoint different verifiers and pay the fees for the services. Moreover, the insured could also specify the number of insurers needed in the insurance contract and how many portions each insurer could have.
+
+For example, for flight delay insurance, an insured could ask for 20 insurers who equally insure a flight with ticket worth $600. If the premium is $10, each insurer would receive 50 cents. If the flight is delayed, each insurer would pay the loss based on their portions. Since the insurance policy is equally split, the payment would be $30 for each insurer.
 
 ### Insurer
 
+An insurer in FIX can be either individual or corporate entities. As long as they agree to pay the loss when accident occurs. Unlike traditional corporate insurers, the insurers in FIX could insure portion of an insurance policy, as mentioned in the last section. 
+
+In addition to the contingent transactions mentioned above, insurers are also required to hold certain amount of reserve based on regulations, like traditional corporate insurers. The Compliance Checker section will discuss more about it.
+
 ### Eligibility Verifier
+
+Eligibility verificaiton is an important procedure for insurance business.
 
 ### Accident Verifier
 
 ### Loss Verifier
- 
+
+### Data Service Provider
+
+### Compliance Checker
+
+### Insurance Brokerage
 
 ## FIX Token
 
