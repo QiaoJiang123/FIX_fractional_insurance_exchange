@@ -96,7 +96,7 @@ FIX is an open exchange. Whenever there is a request for an insurance policy, an
 
 Also, if a new joiner wants to provide insurance policies, how can he/she start? 
 
-Therefore, there is a natural need for insurance brokerage to provide services such as bidding for new insurance requests or provide starter insurance policy portfolios. 
+Therefore, there is a natural need for insurance brokerage to provide services such as bidding for new insurance requests on behalf of individual insurers or provide starter insurance policy portfolios for new joiners. 
 
 ## FIX Token
 
@@ -123,15 +123,27 @@ Unlike traditional insurance business model which is BtoC, the participants in t
 4. Correlations among covered risks
 5. Accident occurrence, etc.
 
-Some types of the missing information are resolved by corporate insurers such as 1, 3, 4, 5. Some are just new to current participants such as 2 and 5. Note that accident occurrence appears in both categories.
+Some types of the missing information are resolved by corporate insurers such as 1, 3, 4, 5. Some are just new to current participants such as 2 and 5. Note that accident occurrence appears in both categories. It is because unlike traditional way to collect accident occurence data using investgators, accident verifier in FIX may use telematics data or autonomous driving data for accident verification. It requires new type of participants. Refer to New Market Players below for more information.
 
 ## Secondary Insurance Market
 
+Once an insurance policy is issued, there exists an opportunity for insurers to trade the policy with others. This is called Secondary Insurance Market. It would be easier to think of insurance issurance as IPO in stock market.
+
+What makes the secondary trading possible is the need to optimize insurance policy portfolios. If an insurance policy provides more diversificaiton to an insurer than the owner, the trading may lead to a win-win transaction.
+
 ## Financial Derivatives
+
+Due to the existence of secondary insurance market, securitization of insurance policies become viable in FIX. A financial institute could buy a portfolio of insurance policies and securitize them into a bond. Such bond could be sold in the financial market. This is a great way to transfer insurance risk into the financial market. This risk transfer is a great solution for catastrophic insurance problem.
 
 ## New Solution for Catastrophic Insurance
 
+Catastrophic insurance is always a problem. In academia, this insurance is not considered globally insurable since the loss result from a catastrophic event is so extreme that the insurance industry could not absorb it. Howevet, compared to the size of the financial market, catastrophic loss does not seem to be extreme. Therefore, transfering catastrophic risk to the financial market is a viable solution to catastrophic insurance. The existing and popular tool is CAT bond. But the market lacks liquidity and CAT bond is less transparent.
+
+If catastrophic insurance is sold in FIX and securitization is used for risk transfer, the catastrophic risk could be smoothly transferred to the financial market with high transparency.
+
 ## New Market Players
+
+FIX is a highly automated system. One of its goals is to reduce manual work as much as possible, such as accident verification and loss verification.
 
 ### Credit Provider
 
