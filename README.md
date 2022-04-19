@@ -59,7 +59,12 @@ In addition to the contingent transactions mentioned above, insurers are also re
 
 ### Eligibility Verifier
 
-Eligibility verificaiton is an important procedure for insurance business.
+Eligibility verificaiton is an important step for insurance business. Insurance is essentially a gambling. What differs insurance from gambling is its purpose, that is, risk 
+transfer. That means one party must have some existing risk before entering an insurance policy for that risk. Also, the party or the family of the party must be the beneficiary of the insurance policy. The conditions make the party eligible to get a certain type of an insurance policy.
+
+Eligibility verification ensures that the smart contract is an insurance policy. For example, for flight delay insurance, the insured must be the flight ticket holder to buy a flight delay insurance for his or her flight.
+
+
 
 ### Accident Verifier
 
