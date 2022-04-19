@@ -103,3 +103,13 @@ Some types of the missing information are resolved by corporate insurers such as
 ## Financial Derivatives
 
 ## New Solution for Catastrophic Insurance
+
+## New Market Players
+
+### Credit Provider
+
+### DeFi
+
+### Internet of Things
+
+### Micro-reinsurer
