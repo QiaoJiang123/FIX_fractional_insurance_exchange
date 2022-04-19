@@ -82,13 +82,21 @@ For some LOB such as auto insurance, verifiying accident is not enough. Loss amo
 
 Data Service Provider is not required in the smart contract. However, it is an important player in FIX since both insureds and insurers are individuals now. They do not have enough data to start an insurance policy. For example, for flight delay insurance, both insureds and insurers need to know the odds for the premium and reserves. Moreover, for insurers, they need to know the multi-variable distributions among flights to find the best insurance policy portfolio, just like how people invest stocks. Another type of data needed maybe the characteristic of insureds. It may not be PII but it could be a score to indicate the riskiness of the insured based on his or her insurance history.
 
-There are much more scenarios for the need of data service.
+There are much more scenarios for the need of data service. This is where new participants, such as car manufacturers who have telematics data or autonomous driving data,come into the game.
 
 ### Compliance Checker
 
+Regulation is still needed since each individual insurer is just like a micro insurance company. They are facing and creating the same problems such as insolvency, suspecious fund raising using insurance, etc. Therefore, some certain regulations need to be enforced. The reason why this role is not required is that insured and insurer may be willing to take risks. However, getting a stamp from Compliance Checker is definitely recommended in the system. 
 
+Compliance Checker will check whether certain regulation requirement are met or not. For example, if an insurer provides an insurance, he/she should have certain amount of reserves held. 
 
 ### Insurance Brokerage
+
+FIX is an open exchange. Whenever there is a request for an insurance policy, any participant could compete for the opportunity. The problem is if individual insurers are able to compete with corporate insurers if corporate insurers decide to use the exchange as well. The latter participant may have faster internet and better servers to find new requests.
+
+Also, if a new joiner wants to provide insurance policies, how can he/she start? 
+
+Therefore, there is a natural need for insurance brokerage to provide services such as bidding for new insurance requests or provide starter insurance policy portfolios. 
 
 ## FIX Token
 
