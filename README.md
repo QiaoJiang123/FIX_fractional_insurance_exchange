@@ -83,4 +83,10 @@ Unlike traditional insurance business model which is BtoC, the participants in t
 4. Correlations among covered risks
 5. Accident occurrence, etc.
 
-Some types of the missing information are resolved by corporate insurers such as 1, 3, 4, 5. Some are just new to current participants such as 2.
+Some types of the missing information are resolved by corporate insurers such as 1, 3, 4, 5. Some are just new to current participants such as 2 and 5. Note that accident occurrence appears in both categories.
+
+## Secondary Insurance Market
+
+## Financial Derivatives
+
+## New Solution for Catastrophic Insurance
