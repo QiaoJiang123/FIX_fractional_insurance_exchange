@@ -149,7 +149,9 @@ For example, consider the accident verification of a car in an auto insurance. M
 
 The second group of new market players can be very similar to financial market service providers. Traditionally, insurers possess the information to calculate the premium for insureds. When both insureds and insurers are individuals in FIX, no side has enough information about premium, reserve and policy portfolio selection. For premium and reserve, insureds and insurers could request for extra consulting service from insurance experts, individuals or corporates, subject to regulation.
 
-For policy protfolio selection, it is like stock portfolio selection. Insurers need extra information to decide which insurance policy to insure and what is the optimal portion to invest. There will be the need for insurance brokerage
+For policy protfolio selection, it is like stock portfolio selection. Insurers need extra information to decide which insurance policy to insure and what is the optimal portion to invest. There will be the need for insurance brokerage for data and recommendation. 
+
+Lastly, since there will be both individual and corporate insurers in the exchange, it would be hard for individuals to be picked due to less professional infracstructure, including internet speed, 
 
 ### Credit Provider
 
