@@ -143,22 +143,24 @@ If catastrophic insurance is sold in FIX and securitization is used for risk tra
 
 ## New Market Players
 
+### Internet of Things
+
 FIX is designed to be a highly automated system. One of its advantages is to reduce manual work to large extent, such as accident verification and loss verification. The exchange may not deploy any model for both verification since it requires large space for storage, which lead to high cost. Therefore, the exchange expects third parties to provide such service. This leads to the first group of new market players in the insurance industry, that is, tech companies that specialized in Internet of Things and Artificial Intelligence.
 
 For example, consider the accident verification of a car in an auto insurance. Many car manufractuers possess telematics data or/and autonomous driving data. Those data can be used to identify an accident after processed by a machine learning model and update the status in the blockchain. It generates new revenue stream for the companies and cause no privacy issue.
+
+### Insurance Brokerage
 
 The second group of new market players can be very similar to financial market service providers. Traditionally, insurers possess the information to calculate the premium for insureds. When both insureds and insurers are individuals in FIX, no side has enough information about premium, reserve and policy portfolio selection. For premium and reserve, insureds and insurers could request for extra consulting service from insurance experts, individuals or corporates, subject to regulation.
 
 For policy protfolio selection, it is like stock portfolio selection. Insurers need extra information to decide which insurance policy to insure and what is the optimal portion to invest. There will be the need for insurance brokerage for data and recommendation. 
 
-Lastly, since there will be both individual and corporate insurers in the exchange, it would be hard for individuals to be picked due to less professional infracstructure, including internet speed, 
+Lastly, since there will be both individual and corporate insurers in the exchange, it would be hard for individuals to be picked due to less professional infracstructure, including internet speed, cloud service, etc. Thus, this is another need for insurance brokerage to acquire insurance policies for individual insurers or help them get into the lottery phase for insurance policy investment with some advantage.
 
 ### Credit Provider
 
-
+When insurer starts insuring, a certain amount of reserve is needed. There are two ways to store reserves. The first way is to send the full amount of possible loss to the insurance smart contract deployed by the insurer.
 
 ### DeFi
-
-### Internet of Things
 
 ### Micro-reinsurer
