@@ -143,9 +143,15 @@ If catastrophic insurance is sold in FIX and securitization is used for risk tra
 
 ## New Market Players
 
-FIX is a highly automated system. One of its goals is to reduce manual work as much as possible, such as accident verification and loss verification.
+FIX is a highly automated system. One of its advantages is to reduce manual work to large extent, such as accident verification and loss verification.
+
+Therefore, the first group of new market players is the tech companies that specialized in IoT and AI.
+
+The second group of new market players is the equivalency of financial market participants.
 
 ### Credit Provider
+
+
 
 ### DeFi
 
