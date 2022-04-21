@@ -145,9 +145,9 @@ If catastrophic insurance is sold in FIX and securitization is used for risk tra
 
 FIX is designed to be a highly automated system. One of its advantages is to reduce manual work to large extent, such as accident verification and loss verification. The exchange may not deploy any model for both verification since it requires large space for storage, which lead to high cost. Therefore, the exchange expects third parties to provide such service. This leads to the first group of new market players in the insurance industry, that is, tech companies that specialized in Internet of Things and Artificial Intelligence.
 
-For example, consider the accident verification of a car in an auto insurance. Many car manufractuers possess telematics data or/and autonomous driving data. Those data can be used to identify an accident and update the status in the blockchain.
+For example, consider the accident verification of a car in an auto insurance. Many car manufractuers possess telematics data or/and autonomous driving data. Those data can be used to identify an accident after processed by a machine learning model and update the status in the blockchain. It generates new revenue stream for the companies and cause no privacy issue.
 
-The second group of new market players is the equivalency of financial market participants.
+The second group of new market players can be considered as the equivalency of financial market service providers. Traditionally, insurers possess the information to calculate the quote for insureds.
 
 ### Credit Provider
 
