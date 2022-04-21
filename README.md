@@ -147,7 +147,9 @@ FIX is designed to be a highly automated system. One of its advantages is to red
 
 For example, consider the accident verification of a car in an auto insurance. Many car manufractuers possess telematics data or/and autonomous driving data. Those data can be used to identify an accident after processed by a machine learning model and update the status in the blockchain. It generates new revenue stream for the companies and cause no privacy issue.
 
-The second group of new market players can be considered as the equivalency of financial market service providers. Traditionally, insurers possess the information to calculate the quote for insureds.
+The second group of new market players can be very similar to financial market service providers. Traditionally, insurers possess the information to calculate the premium for insureds. When both insureds and insurers are individuals in FIX, no side has enough information about premium, reserve and policy portfolio selection. For premium and reserve, insureds and insurers could request for extra consulting service from insurance experts, individuals or corporates, subject to regulation.
+
+For policy protfolio selection, it is like stock portfolio selection. Insurers need extra information to decide which insurance policy to insure and what is the optimal portion to invest. There will be the need for insurance brokerage
 
 ### Credit Provider
 
