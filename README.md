@@ -143,7 +143,7 @@ If catastrophic insurance is sold in FIX and securitization is used for risk tra
 
 ## New Market Players
 
-### Internet of Things
+### Internet of Things (IoT) Company
 
 FIX is designed to be a highly automated system. One of its advantages is to reduce manual work to large extent, such as accident verification and loss verification. The exchange may not deploy any model for both verification since it requires large space for storage, which lead to high cost. Therefore, the exchange expects third parties to provide such service. This leads to the first group of new market players in the insurance industry, that is, tech companies that specialized in Internet of Things and Artificial Intelligence.
 
@@ -159,7 +159,7 @@ Lastly, since there will be both individual and corporate insurers in the exchan
 
 ### Credit Provider
 
-When insurer starts insuring, a certain amount of reserve is needed. There are two ways to store reserves. The first way is to send the full amount of possible loss to the insurance smart contract deployed by the insurer.
+When insurer starts insuring, a certain amount of reserve is needed. There are two ways to store reserves. The first way is to send the full amount of possible loss to the insurance smart contract deployed by the insurer. For instance, if an insurer gets 10% of a flight delay insurance with $600 coverage, the insurer needs to transfer $60 to the smart contract. If the flight is delayed, the amount will be transferred to the insured. Otherwise, the insurer will have $60 back plus 10% premium.
 
 ### DeFi
 
