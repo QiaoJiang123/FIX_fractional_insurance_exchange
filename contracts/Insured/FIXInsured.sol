@@ -36,6 +36,8 @@ pickInsurerLottery
 
 */
 
+// Add modifier for condition check
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract FIXInsurer is Ownable {
