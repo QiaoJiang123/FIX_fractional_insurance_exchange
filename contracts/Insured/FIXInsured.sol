@@ -55,16 +55,27 @@ contract FIXInsurer is Ownable {
     mapping(address => bool) public eligibilityVerifierResult;
     POLICY_STATE public policy_state;
 
-    function setEligibilityVerifier(
-        address payable[] memory _eligibilityVerifier
-    ) public onlyOwner {
+    function addEligibilityVerifier(address payable _eligibilityVerifier)
+        public
+        onlyOwner
+    {
         require(
             policy_state == POLICY_STATE.OPEN_UNVERIFIED,
             "Can't change Eligibility Verifier at this stage!"
         );
-        for (uint256 i = 0; i < _eligibilityVerifier.length; i++) {
-            eligibilityVerifier.push(_eligibilityVerifier[i]);
+        bool EV_exist = false;
+        for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
+            if (eligibilityVerifier[i] == _eligibilityVerifier) {
+                EV_exist = true;
+            }
         }
+        if (EV_exist == false) {
+            eligibilityVerifier.push(_eligibilityVerifier);
+        }
+    }
+
+    function get_EV_length() public view returns (uint256) {
+        return eligibilityVerifier.length;
     }
 
     function verifyEligibility(bool _verificationDummy) public {
