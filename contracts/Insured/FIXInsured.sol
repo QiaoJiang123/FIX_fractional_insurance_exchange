@@ -7,12 +7,12 @@ Variables to include:
 
 enum POLICY_STATE has 6 states:
 
-OPEN_UNVERIFIED: An insured deployed a smart contract to request an insurance policy but the eligibility is not verified
-OPEN_VERIFIED: The eligibility is verified. Open to accept insurers.
-AUCTION: The number of insurers meet a certain criterion. Ready to pick insurers.
-ACTIVE_POLICY: Policy is effective
-ACCIDENT_VERIFIED: An accident occurs and is verified by Accident Verifier.
-CLOSED: Policy is closed
+    OPEN_UNVERIFIED: An insured deployed a smart contract to request an insurance policy but the eligibility is not verified
+    OPEN_VERIFIED: The eligibility is verified. Open to accept insurers.
+    AUCTION: The number of insurers meet a certain criterion. Ready to pick insurers.
+    ACTIVE_POLICY: Policy is effective
+    ACCIDENT_VERIFIED: An accident occurs and is verified by Accident Verifier.
+    CLOSED: Policy is closed
 
 eligibility_verifier: an array of payable addresses which could provide eligibility verification with certain fees.
 
@@ -20,8 +20,8 @@ Functions to include:
 
 setInsurerCondition
 
-setEligibilityVerifier:
-    This function allows the insured to list the eligibility verifiers needed for this contract.
+addEligibilityVerifier:
+    This function allows the insured to add an eligibility verifier needed for this contract.
 verifyEligibility: (Done)
 setAccidentVerifier
 
@@ -31,7 +31,13 @@ addInsurerCandidate
 
 pickInsurerLottery
 
+EV_type: 
 
+    There are two types of eligibility verification. And and Or.
+    And type means the eligibility is verified if all eligibility verifiers say yes.
+    Or type means the eligibility is verified if at least one eligibility verifiers says yes.
+    0 for And
+    1 for Or
 
 
 */
@@ -50,10 +56,19 @@ contract FIXInsurer is Ownable {
         CLOSED
     }
 
+    uint256 EV_type;
     address payable[] public eligibilityVerifier;
     address payable[] public AccidentVerifier;
     mapping(address => bool) public eligibilityVerifierResult;
-    POLICY_STATE public policy_state;
+    POLICY_STATE public policy_state = OPEN_UNVERIFIED;
+
+    constructor(uint256 _EV_type) {
+        require(
+            _EV_type == 1 || _EV_type == 0,
+            "The type of eligibility verification can only be 1 or 0"
+        );
+        EV_type = _EV_type;
+    }
 
     function addEligibilityVerifier(address payable _eligibilityVerifier)
         public
