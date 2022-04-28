@@ -39,18 +39,22 @@ pragma solidity ^0.8.0;
         VERIFIED_NEGATIVE: the accident verifier has verified accident. The result is negative, which means no accident has occurred.
 
 
-EV_type: 
+@para EV_type
 
     There are two types of eligibility verification. And and Or.
     And type means the eligibility is verified if all eligibility verifiers say yes.
     Or type means the eligibility is verified if at least one eligibility verifiers says yes.
-    0 for And
-    1 for Or
+    1 for And
+    2 for Or
 
+@para EV_verified_count
 
-EV_verified_count: a uint256 variable that count the number of verification received
+    a uint256 variable that count the number of verification received
 
+@para EV_final_result
 
+    A bool variable that returns the final result of eligibility verification when called by the insured. 
+    Also, the insured must wait until all eligibility verifier submit their verification.
 
 Functions to include:
 
@@ -70,7 +74,21 @@ setInsurerCondition
     If the accident verifier proposed is not added before, it will be added. Otherwise, it raises an error.
     The value of this accident verifier in eligibilityVerifierResult is changed to "ADDED"
 
-verifyEligibility: (Done)
+@ dev verifyEligibility
+
+    verifyEligibility is called by eligibility verifiers. It is called after verifiers are added.
+
+@dev getEligibilityFinalResult
+
+    This function determines whether the insured is eligible to get insurance or not.
+    It is called by the insured. The policy' state must be OPEN_UNVERIFIED.
+    If the final result, EV_final_result is true, the request will move to the next stage, OPEN_VERIFIED.
+    Otherwise, the request will be moved to the last stage, CLOSED. No further action is allowed in this smart contract.
+
+@ dev verifyAccident
+
+    verifyAccident is called by accident verifiers. It is called after verifiers are added.
+
 
 addAccidentVerifier:
 
@@ -105,6 +123,7 @@ contract FIXInsurer is Ownable {
 
     uint256 EV_type;
     uint256 EV_verified_count = 0;
+    bool EV_final_result;
 
     address[] public eligibilityVerifier;
     mapping(address => string) public eligibilityVerifierResult;
@@ -116,8 +135,8 @@ contract FIXInsurer is Ownable {
 
     constructor(uint256 _EV_type) {
         require(
-            _EV_type == 1 || _EV_type == 0,
-            "The type of eligibility verification can only be 1 or 0"
+            _EV_type == 1 || _EV_type == 2,
+            "The type of eligibility verification can only be 1 or 2"
         );
         EV_type = _EV_type;
     }
@@ -152,6 +171,8 @@ contract FIXInsurer is Ownable {
     }
 
     function verifyEligibility(bool _verificationDummy) public {
+        // Eligibility verification is only allowed when the policy is not stated and no verification has been made.
+        // That is when policy_state is OPEN_UNVERIFIED
         require(
             policy_state == POLICY_STATE.OPEN_UNVERIFIED,
             "Can't change Eligibility Verification at this stage!"
@@ -164,6 +185,70 @@ contract FIXInsurer is Ownable {
             eligibilityVerifierResult[msg.sender] = "VERIFIED_POSITIVE";
         } else {
             eligibilityVerifierResult[msg.sender] = "VERIFIED_NEGATIVE";
+        }
+        EV_verified_count += 1;
+    }
+
+    function getEligibilityFinalResult() public onlyOwner {
+        // EV_type == 1 means all verification must be positive (And)
+        // EV_type == 2 means at least one verification should be positive (Or)
+        require(
+            (EV_verified_count == eligibilityVerifier.length) &&
+                (policy_state == POLICY_STATE.OPEN_UNVERIFIED),
+            "Wait until all eligibility verifiers submit their verification"
+        );
+        bool EV_result;
+        if (EV_type == 1) {
+            EV_result = true;
+            // And
+            for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
+                if (
+                    compareStrings(
+                        eligibilityVerifierResult[eligibilityVerifier[i]],
+                        "VERIFIED_NEGATIVE"
+                    ) == true
+                ) {
+                    EV_result = false;
+                    break;
+                }
+            }
+        } else {
+            EV_result = false;
+            // Or
+            for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
+                if (
+                    compareStrings(
+                        eligibilityVerifierResult[eligibilityVerifier[i]],
+                        "VERIFIED_POSITIVE"
+                    ) == true
+                ) {
+                    EV_result = true;
+                    break;
+                }
+            }
+        }
+        EV_final_result = EV_result;
+        if (EV_final_result == true) {
+            policy_state = POLICY_STATE.OPEN_VERIFIED;
+        } else {
+            policy_state = POLICY_STATE.CLOSED;
+        }
+    }
+
+    function verifyAccident(bool _verificationDummy) public {
+        // Accident verification is only allowed when the policy is active. That is when policy_state is ACTIVE_POLICY
+        require(
+            policy_state == POLICY_STATE.ACTIVE_POLICY,
+            "Can't change Accident Verification at this stage!"
+        );
+        require(
+            compareStrings(accidentVerifierResult[msg.sender], "ADDED"),
+            "You are either not in the accident verifier list or have submitted your verification."
+        );
+        if (_verificationDummy == true) {
+            accidentVerifierResult[msg.sender] = "VERIFIED_POSITIVE";
+        } else {
+            accidentVerifierResult[msg.sender] = "VERIFIED_NEGATIVE";
         }
     }
 
