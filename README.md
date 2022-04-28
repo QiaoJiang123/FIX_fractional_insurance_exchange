@@ -169,6 +169,6 @@ ALl the calculation the compliance requirement in the second method need a thid 
 
 ### DeFi
 
-
+In traditional insurance business, insurance companies invest the premium they receive, subject to certain regulation. 
 
 ### Micro-reinsurer
