@@ -11,7 +11,7 @@ pragma solidity ^0.8.0;
     POLICY_STATE has 6 states:
         OPEN_UNVERIFIED: An insured deployed a smart contract to request an insurance policy but the eligibility is not verified
         OPEN_VERIFIED: The eligibility is verified. Open to accept insurers.
-        AUCTION: The number of insurers meet a certain criterion. Ready to pick insurers.
+        LOTTERY: The number of insurers meet a certain criterion. Ready to pick insurers.
         ACTIVE_POLICY: Policy is effective
         ACCIDENT_VERIFIED: An accident occurs and is verified by Accident Verifier.
         CLOSED: Policy is closed
@@ -56,6 +56,17 @@ pragma solidity ^0.8.0;
     A bool variable that returns the final result of eligibility verification when called by the insured. 
     Also, the insured must wait until all eligibility verifier submit their verification.
 
+@para premiumRange
+
+    A range of premium proposed by the insured. The lower bound may be subject to regulation to mitigate insolvency risk.
+    Upper bound may be given by the insured.
+
+@para fixedLoss
+
+    Fixed loss is the loss amount proposed by the insured. This applies to trip delay insurance where the insured knows how much he/she has paid for
+    the ticket. This amount will also be verified by EV.
+
+
 Functions to include:
 
 setInsurerCondition
@@ -85,10 +96,21 @@ setInsurerCondition
     If the final result, EV_final_result is true, the request will move to the next stage, OPEN_VERIFIED.
     Otherwise, the request will be moved to the last stage, CLOSED. No further action is allowed in this smart contract.
 
-@ dev verifyAccident
+@dev addPotentialInsurer
+
+    An insurer can add himself or herself to this smart contract for later lottery.
+
+@dev verifyAccident
 
     verifyAccident is called by accident verifiers. It is called after verifiers are added.
 
+@dev insurerSelectionLottery
+
+    start the lottery to select insurers.
+
+@dev addPotentialInsurers
+
+    Allow insurers to add themselves for the lottery later.
 
 addAccidentVerifier:
 
@@ -115,30 +137,68 @@ contract FIXInsurer is Ownable {
     enum POLICY_STATE {
         OPEN_UNVERIFIED,
         OPEN_VERIFIED,
-        AUCTION,
+        LOTTERY,
         ACTIVE_POLICY,
         ACCIDENT_VERIFIED,
         CLOSED
     }
 
+    struct premiumRange {
+        uint256 premiumLower;
+        uint256 premiumUpper;
+    }
+
+    premiumRange premium_range;
+
+    uint256 fixedLoss;
+
     uint256 EV_type;
     uint256 EV_verified_count = 0;
     bool EV_final_result;
 
+    uint256 public potentialInsurerLimit;
+    uint256 public insurerLimit;
+    mapping(address => uint256) public potentialInsurerDeposit;
+    mapping(address => uint256) public potentialInsurerPremium;
+
     address[] public eligibilityVerifier;
     mapping(address => string) public eligibilityVerifierResult;
+
+    address[] public potentialInsurer;
+    address[] public insurerSelected;
 
     address[] public accidentVerifier;
     mapping(address => string) public accidentVerifierResult;
 
     POLICY_STATE public policy_state = POLICY_STATE.OPEN_UNVERIFIED;
 
-    constructor(uint256 _EV_type) {
+    constructor(
+        uint256 _EV_type,
+        uint256 _potentialInsurerLimit,
+        uint256 _insurerLimit,
+        uint256 _fixedLoss
+    ) {
         require(
             _EV_type == 1 || _EV_type == 2,
             "The type of eligibility verification can only be 1 or 2"
         );
         EV_type = _EV_type;
+        potentialInsurerLimit = _potentialInsurerLimit;
+        insurerLimit = _insurerLimit;
+        fixedLoss = _fixedLoss;
+    }
+
+    function setPremiumRange(uint256 _premiumLower, uint256 _premiumUpper)
+        public
+        onlyOwner
+    {
+        require(
+            (policy_state == POLICY_STATE.OPEN_UNVERIFIED) ||
+                (policy_state == POLICY_STATE.OPEN_VERIFIED),
+            "You cannot set premium range at this moment!"
+        );
+        premium_range.premiumLower = _premiumLower;
+        premium_range.premiumUpper = _premiumUpper;
     }
 
     function addEligibilityVerifier(address _eligibilityVerifier)
@@ -234,6 +294,36 @@ contract FIXInsurer is Ownable {
             policy_state = POLICY_STATE.CLOSED;
         }
     }
+
+    function addPotentialInsurers(uint256 _premiumProposed) public payable {
+        require(
+            (policy_state == POLICY_STATE.OPEN_VERIFIED) ||
+                (policy_state == POLICY_STATE.LOTTERY),
+            "You cannot add a potential insurer for the lottery later"
+        );
+        require(
+            (potentialInsurerDeposit[msg.sender] == 0) &&
+                (potentialInsurer.length < potentialInsurerLimit),
+            "You are in the list for the aution or no space is available."
+        );
+        require(
+            (_premiumProposed >= premium_range.premiumLower) &&
+                (_premiumProposed <= premium_range.premiumUpper),
+            "The proposed premium does not fall into the range. Please propose a new one!"
+        );
+        require(msg.value == fixedLoss); // The deposit must be exactly the same amount as fixedLoss.
+        potentialInsurer.push(msg.sender);
+        potentialInsurerDeposit[msg.sender] = msg.value;
+        potentialInsurerPremium[msg.sender] = _premiumProposed;
+
+        if (potentialInsurer.length >= insurerLimit) {
+            // Once there are enough potential insurers, the lottery can begin.
+            // It is not necessary to wait until potential insurers hit the limit.
+            policy_state = POLICY_STATE.LOTTERY;
+        }
+    }
+
+    function insurerSelectionLottery() public payable {}
 
     function verifyAccident(bool _verificationDummy) public {
         // Accident verification is only allowed when the policy is active. That is when policy_state is ACTIVE_POLICY
