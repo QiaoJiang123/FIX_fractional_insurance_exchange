@@ -166,6 +166,9 @@ contract FIXInsurer is Ownable {
 
     address[] public potentialInsurer;
     address[] public insurerSelected;
+    mapping(address => uint256) public insurerSelectedDeposit;
+    mapping(address => uint256) public insurerSelectedPremium;
+    uint256 public insuredDeposit;
 
     address[] public accidentVerifier;
     mapping(address => string) public accidentVerifierResult;
@@ -323,7 +326,61 @@ contract FIXInsurer is Ownable {
         }
     }
 
-    function insurerSelectionLottery() public payable {}
+    function insurerSelectionLottery() public payable onlyOwner {
+        address[] memory potentialInsurerTemp = potentialInsurer;
+        for (uint256 i = 0; i < insurerLimit; i++) {
+            uint256 randomNumber = uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp,
+                        msg.sender,
+                        i,
+                        block.difficulty
+                    )
+                )
+            );
+            insurerSelected[i] = potentialInsurerTemp[
+                randomNumber % potentialInsurerTemp.length
+            ];
+
+            insurerSelectedDeposit[
+                insurerSelected[i]
+            ] = potentialInsurerDeposit[insurerSelected[i]];
+            potentialInsurerDeposit[insurerSelected[i]] = 0;
+
+            insurerSelectedPremium[
+                insurerSelected[i]
+            ] = potentialInsurerPremium[insurerSelected[i]];
+
+            delete potentialInsurerTemp[
+                randomNumber % potentialInsurerTemp.length
+            ];
+        }
+        // Pay back to un-selected insurers
+        for (uint256 i = 0; i < insurerSelected.length; i++) {
+            payable(potentialInsurer[i]).transfer(
+                potentialInsurerDeposit[potentialInsurer[i]]
+            );
+        }
+        for (uint256 i = 0; i < potentialInsurer.length; i++) {
+            insuredDeposit =
+                insuredDeposit +
+                insurerSelectedPremium[insurerSelected[i]];
+        }
+    }
+
+    function insuredDepositPremium() public payable onlyOwner {
+        require(msg.value == insuredDeposit, "Send the exact amount!");
+        require(
+            policy_state == POLICY_STATE.LOTTERY,
+            "Need finish the lottery!"
+        );
+        require(
+            (insuredDeposit > 0) && (insurerSelected.length == insurerLimit),
+            "The premium deposited cannot be zero or there should be enought insurers selected."
+        );
+        policy_state = POLICY_STATE.ACTIVE_POLICY;
+    }
 
     function verifyAccident(bool _verificationDummy) public {
         // Accident verification is only allowed when the policy is active. That is when policy_state is ACTIVE_POLICY
