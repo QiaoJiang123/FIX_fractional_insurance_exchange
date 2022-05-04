@@ -9,5 +9,5 @@ This smart contract contains the reserve for an insurer. Typically, the reserve 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Reserve is Ownable {
-    function addPolicy(address _insurancePolicy) {}
+    function addPolicy(address _insurancePolicy) public {}
 }

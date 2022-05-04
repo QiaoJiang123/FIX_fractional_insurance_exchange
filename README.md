@@ -165,7 +165,7 @@ The first method is not very efficient since it is very rare to have all insuran
 
 The reserve account will be updated daily to reflect the change in risk. If the required amount is more than the actual amount, more contribution is needed from the insurer. Also, when a payment is made from the reserve account due to an incident, the new reserve amount will be calculated and the new required amount will be sent to the insurer for more contribution.
 
-ALl the calculation the compliance requirement in the second method need a thid part, called Reserve Verifier, to verify to ensure the insurer is complying with all regulations so that the insolvency risk is reasonable.
+ALl the calculation the compliance requirement in the second method need a thid party, called Reserve Verifier, to verify to ensure the insurer is complying with all regulations so that the insolvency risk is reasonable.
 
 ### DeFi
 
