@@ -173,9 +173,21 @@ In traditional insurance business, insurance companies invest the premium they r
 
 ### Micro-reinsurer
 
-Micro-insurer is another new market player. 
+Micro-reinsurer is another new market player. For some insurance, the loss is fixed such as life insurance and flight delay insurance. Individual insurers should not worry about excessive loss. However, for other lines of business, such as auto insurance, the loss could range from $0 to tens of throusands of dollars. Even insuring a part of an insurance policy, individual insurers may still find the variation large which could lead to large amount of reserve requirement. One solution is to add a cap on the loss payment and transfer the residual loss to another party. The concept is identical to Excess of Loss reinsurance. But the distribution of the underlying loss may be very different. Also, the data needed to model the loss could be different. This is where traditional corproate insurers could get involved and provide individual insurers micro-reinsurance policies for the residual loss.
 
 ## Q&A
 
 In this section, I will answer some questions I have been frequently asked when I introduced the idea to others. Hopefully, this Q&A section could clarify some confusion
+
+1. Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
+
+2. What roles traditional corporate insurers would play in FIX?
+
+3. Who will be eligibility verifier(s), accident verififer(s) and loss verifier(s)?
+
+4. How service fee is calculated?
+
+5. Who will be the data oracles?
+
+6. Why traditional corporate insurers will support you with their data?
 
