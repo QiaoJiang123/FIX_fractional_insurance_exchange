@@ -1,4 +1,4 @@
-# FIX - Fractional Insurance Exchange
+# FIX - Fractional Insurance Exchange #
 
 This project develops an insurance exchange, named FIX, for individuals to buy and sell insurance policies.
 
@@ -161,7 +161,7 @@ Lastly, since there will be both individual and corporate insurers in the exchan
 
 When insurer starts insuring, a certain amount of reserve is needed. There are two ways to store reserves. The first way is to send the full amount of possible loss to the insurance smart contract deployed by the insurer. For instance, if an insurer gets 10% of a flight delay insurance with $600 coverage, the insurer needs to transfer $60 to the smart contract. If the flight is delayed, the amount will be transferred to the insured. Otherwise, the insurer will have $60 back plus 10% premium.
 
-The first method is not very efficient since it is very rare to have all insurance policies triggered. The typical as well as more efficient way is to have another account to store reserves for all insurance policies. The amount of reserve will not equal to the full contingent amount. Instead, the reserve will be calculated as in traditional corporate insurance companies. It will depend on the statistical characteristics of each insurance policy (full or partial), confidence level, regulatory requirements, etc. 
+The first method is not very efficient since it is very rare to have all insurance policies triggered. The typical as well as more efficient way is to have another account (smart contract) to store reserves for all insurance policies. The amount of reserve will not equal to the full contingent amount. Instead, the reserve will be calculated as in traditional corporate insurance companies. It will depend on the statistical characteristics of each insurance policy (full or partial), confidence level, regulatory requirements, etc. 
 
 The reserve account will be updated daily to reflect the change in risk. If the required amount is more than the actual amount, more contribution is needed from the insurer. Also, when a payment is made from the reserve account due to an incident, the new reserve amount will be calculated and the new required amount will be sent to the insurer for more contribution.
 
@@ -169,6 +169,13 @@ ALl the calculation the compliance requirement in the second method need a thid 
 
 ### DeFi
 
-In traditional insurance business, insurance companies invest the premium they receive, subject to certain regulation. 
+In traditional insurance business, insurance companies invest the premium they receive, subject to certain regulation. In FIX, individual insurers should have the same capability to invest the premium. Instead of traditional investment channels such as stock exchange, insurers in FIX can use DeFi for investment. This can be complished by enabling staking and withdrawing in the reserve account. Meanwhile, for liquidity issue, the reserve account will prioitize loss payment over staking and force withdrawal when not enough balance in the reserve account.
 
 ### Micro-reinsurer
+
+Micro-insurer is another new market player. 
+
+## Q&A
+
+In this section, I will answer some questions I have been frequently asked when I introduced the idea to others. Hopefully, this Q&A section could clarify some confusion
+

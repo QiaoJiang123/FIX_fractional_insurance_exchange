@@ -327,6 +327,8 @@ contract FIXInsurer is Ownable {
     }
 
     function insurerSelectionLottery() public payable onlyOwner {
+        // Insured needs to deposit premium first.
+        // The excess of premium will be returned to the insured later when insurer are selected.
         address[] memory potentialInsurerTemp = potentialInsurer;
         for (uint256 i = 0; i < insurerLimit; i++) {
             uint256 randomNumber = uint256(
