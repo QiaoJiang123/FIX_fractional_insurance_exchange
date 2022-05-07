@@ -179,7 +179,7 @@ Micro-reinsurer is another new market player. For some insurance, the loss is fi
 
 In this section, I will answer some questions I have been frequently asked when I introduced the idea to others. Hopefully, this Q&A section could clarify some confusion
 
-1. Q: Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
+### 1. Q: Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
 
 A: Current IT infrastructure could be used to develop the same system more efficiently and easily using API, cloud services, etc. Also, many hard technical problems in blockchain such as random number generation and access internet data become very natural to traditional IT infracstructure. 
 
