@@ -173,13 +173,21 @@ In traditional insurance business, insurance companies invest the premium they r
 
 ### Micro-reinsurer
 
-Micro-reinsurer is another new market player. For some insurance, the loss is fixed such as life insurance and flight delay insurance. Individual insurers should not worry about excessive loss. However, for other lines of business, such as auto insurance, the loss could range from $0 to tens of throusands of dollars. Even insuring a part of an insurance policy, individual insurers may still find the variation large which could lead to large amount of reserve requirement. One solution is to add a cap on the loss payment and transfer the residual loss to another party. The concept is identical to Excess of Loss reinsurance. But the distribution of the underlying loss may be very different. Also, the data needed to model the loss could be different. This is where traditional corproate insurers could get involved and provide individual insurers micro-reinsurance policies for the residual loss.
+Micro-reinsurer is another new market player. For some insurance, the loss is fixed such as life insurance and flight delay insurance. Individual insurers should not worry about excessive loss. However, for other lines of business, such as auto insurance, the loss could range from $0 to tens of throusands of dollars. Even insuring a part of an insurance policy, individual insurers may still find the variation large which could lead to large amount of reserve requirement. One solution is to impose a cap on the loss payment and transfer the residual loss to another party. The concept is identical to Excess of Loss reinsurance. But the distribution of the underlying loss may be very different. Also, the data needed to model the loss could be different. This is where traditional corproate insurers could get involved and provide individual insurers micro-reinsurance policies for the residual loss.
 
 ## Q&A
 
 In this section, I will answer some questions I have been frequently asked when I introduced the idea to others. Hopefully, this Q&A section could clarify some confusion
 
-1. Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
+1. Q: Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
+
+A: Current IT infrastructure could be used to develop the same system more efficiently and easily using API, cloud services, etc. Also, many hard technical problems in blockchain such as random number generation and access internet data become very natural to traditional IT infracstructure. 
+
+However, the biggest concern on allowing individual insurers is the regulation. Regulating a big corporate insurer would be much easier than regulating a large amount of atomic individual insurers. For example, the regulation costs could be easily passed to corporate insurers such as more reporting and more scenario simulations. So, it is pessimistic that regulators would ever allow individual insurers in the industry. From this perspective, the major advantage of using blockchain to build FIX is to provide a sort of bargaining power of individual insurers against regulators simply because blockchain is a decentralized and anonymous system where it is extremely hard to enforce regulation. In other words, individual insurers and insureds do not need or even enacounter any effective regulation to finsih a deal. 
+
+It does not mean regulation is not necessary. In fact, since an insurance can be considered as a gamling game with 'good' purpose, some essential regulation is needed to make a gamling game into an insurance.
+
+What FIX could achieve is to utilize the highly automated system built on top of blockchain to enforce essential regulation so that individual insurers could involve in insurance business.
 
 2. What roles traditional corporate insurers would play in FIX?
 
