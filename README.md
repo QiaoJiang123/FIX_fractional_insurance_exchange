@@ -191,7 +191,15 @@ What FIX could achieve is to utilize the highly automated system built on top of
 
 2. What roles traditional corporate insurers would play in FIX?
 
+There are multiple new roles that traditional corporate insurers can play in FIX. First, individual insurers need data to determine premium and reserve. Traditional corproate insurers could leverage the historical data to provide consulting services for individual insurers. Also, like mentioned in New Market Players section, tradtitional corporate insurers could also provide micro-reinsurance for partial insurance policies. 
+
+A natural follow-up question would be why traditional corporate insurers cannot sell insurance policies like they used to do in FIX. The simple answer is YES, they can still sell insurance policies. But, their market share would decrease as individual insurers are taking part of it. It is vital to realize that FIX in blockchain is not only a new platform but also introduces a new landscape for revenue distribution in the insurance industry. It is not corporate insurers versus individual insurers. It is new insurance players versus old insurance players. Individual insurers may be equipped with services from new market players such as IoT tech companies when competing with corporate insurers, which gives individual insurers advantages in the compeition while sharing the profit with new group of players such as IoT tech companies, insurance brokerage, etc. 
+
+Therefore, traditional corporate insurers may need to consider new roles in FIX. This implies that they need some transition to some new business model.
+
 3. Who will be eligibility verifier(s), accident verififer(s) and loss verifier(s)?
+
+There is no requirement, license or certificate needed for those verifiers. By rules, every one in the blockchain could be a verifier.
 
 4. How service fee is calculated?
 
