@@ -181,7 +181,7 @@ In this section, I will answer some questions I have been frequently asked when 
 
 ### Q1: Why do you choose blockchain instead of current IT infrastructure which seems more efficient?
 
-A: Current IT infrastructure could be used to develop the same system more efficiently and easily using API, cloud services, etc. Also, many hard technical problems in blockchain such as random number generation and access internet data become very natural to traditional IT infracstructure. 
+Current IT infrastructure could be used to develop the same system more efficiently and easily using API, cloud services, etc. Also, many hard technical problems in blockchain such as random number generation and access internet data become very natural to traditional IT infracstructure. 
 
 However, the biggest concern on allowing individual insurers is the regulation. Regulating a big corporate insurer would be much easier than regulating a large amount of atomic individual insurers. For example, the regulation costs could be easily passed to corporate insurers such as more reporting and more scenario simulations. So, it is pessimistic that regulators would ever allow individual insurers in the industry. From this perspective, the major advantage of using blockchain to build FIX is to provide a sort of bargaining power of individual insurers against regulators simply because blockchain is a decentralized and anonymous system where it is extremely hard to enforce regulation. In other words, individual insurers and insureds do not need or even enacounter any effective regulation to finsih a deal. 
 
@@ -189,7 +189,7 @@ It does not mean regulation is not necessary. In fact, since an insurance can be
 
 What FIX could achieve is to utilize the highly automated system built on top of blockchain to enforce essential regulation so that individual insurers could involve in insurance business.
 
-2. What roles traditional corporate insurers would play in FIX?
+### Q2. What roles traditional corporate insurers would play in FIX?
 
 There are multiple new roles that traditional corporate insurers can play in FIX. First, individual insurers need data to determine premium and reserve. Traditional corproate insurers could leverage the historical data to provide consulting services for individual insurers. Also, like mentioned in New Market Players section, tradtitional corporate insurers could also provide micro-reinsurance for partial insurance policies. 
 
@@ -197,13 +197,17 @@ A natural follow-up question would be why traditional corporate insurers cannot 
 
 Therefore, traditional corporate insurers may need to consider new roles in FIX. This implies that they need some transition to some new business model.
 
-3. Who will be eligibility verifier(s), accident verififer(s) and loss verifier(s)?
+### Q3. Who will be eligibility verifier(s), accident verififer(s) and loss verifier(s)?
 
-There is no requirement, license or certificate needed for those verifiers. By rules, every one in the blockchain could be a verifier.
+There is no requirement, license or certificate needed for those verifiers. By rules, everyone in the blockchain could be a verifier. But in practice, only verifiers that are able to and does provide accurate verification can survive at last. This implies that IoT tech companies and data oracle companies may be the main players as verifiers at last. Insureds and insurers can easily review the accuracy of each verifier by browsing their history.
 
-4. How service fee is calculated?
+### Q4. How service fee is calculated?
 
-5. Who will be the data oracles?
+In later version of FIX, service fee will be needed using FIX token. Service fee is subject to each service provider including verification, data analytics, etc. The amount of service fee for each service also depends on its provider. 
 
-6. Why traditional corporate insurers will support you with their data?
+### Q5. Who will be the data oracles?
+
+In theory, anyone can be a data oracle for FIX. However, in practice, traditional corporate insurers, IoT tech companies, and other platforms that own data will play important roles in FIX as data oracles. For example, in flight delay insurance, data oracles include those that have access to flight purchase data for eligibility verification and flight departure data for accident verification. Whether a data oracle could success in FIX depends on their data accuracy, data update speed, service fee, etc. 
+
+### Q6. Why traditional corporate insurers will support FIX with their data?
 
