@@ -211,3 +211,5 @@ In theory, anyone can be a data oracle for FIX. However, in practice, traditiona
 
 ### Q6. Why traditional corporate insurers will support FIX with their data?
 
+It would seem impossible that traditional corporate insurers would support FIX with their data so that individual insurers will take their market shares. However, such support is not necessay for FIX to operate properly. As FIX starts with simple lines of business such as flight delay insurance, 
+
