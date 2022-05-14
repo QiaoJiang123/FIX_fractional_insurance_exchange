@@ -327,8 +327,14 @@ contract FIXInsurer is Ownable {
     }
 
     function insurerSelectionLottery() public payable onlyOwner {
-        // Insured needs to deposit premium first.
-        // The excess of premium will be returned to the insured later when insurer are selected.
+        // Insured needs to deposit tentative premium first.
+        // The amount of tentative premium equals the number of insurers multiplied by the upper limit of premium.
+        // After selection lottery is drawn, the actual premium will be calculated.
+        // The excess of premium, tentative premium minus actual premium, will be returned to the insured.
+        require(
+            msg.value == insurerLimit * premiumRange.premiumUpper,
+            "Insured should deposit enough money for insurer selection lottery."
+        );
         address[] memory potentialInsurerTemp = potentialInsurer;
         for (uint256 i = 0; i < insurerLimit; i++) {
             uint256 randomNumber = uint256(
@@ -369,17 +375,8 @@ contract FIXInsurer is Ownable {
                 insuredDeposit +
                 insurerSelectedPremium[insurerSelected[i]];
         }
-    }
-
-    function insuredDepositPremium() public payable onlyOwner {
-        require(msg.value == insuredDeposit, "Send the exact amount!");
-        require(
-            policy_state == POLICY_STATE.LOTTERY,
-            "Need finish the lottery!"
-        );
-        require(
-            (insuredDeposit > 0) && (insurerSelected.length == insurerLimit),
-            "The premium deposited cannot be zero or there should be enought insurers selected."
+        msg.sender.transfer(
+            insurerLimit * premiumRange.premiumUpper - insuredDeposit
         );
         policy_state = POLICY_STATE.ACTIVE_POLICY;
     }
