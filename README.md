@@ -215,7 +215,9 @@ It would seem impossible that traditional corporate insurers would support FIX w
 
 The worst situation would be no data at all at the beginning for complciated insurance. But as more and more trial and errors, eventually FIX would have enough data contained in itself for individual insurers to use for pricing, reserving, etc. In other words, support from traditional corporate insurers can only accelerate the transition. It is not a necessary component.
 
-Furthermore, the situation traditional corporate insurers are facing is a typical prisoner's dilemma.
+Furthermore, the situation traditional corporate insurers are facing is a typical prisoner's dilemma. Imagine there are two traditional corporate insurers A and B. If both A and B choose not to support, after a while, the new market will not need any insurers like A and B. So, they lose an opportunity to generate revenue by providing support including data service and analytic service. If A choose to support but B does not. A earns the revenue by providing such support but B does not earn anything. If both A nad B choose to support. They both earn some revenue. So, providing support is always better than not. Also, if A starts supporting FIX earlier than B, A can build its reputation earlier than B, which is very advantageous when expanding in a new market. This also builds more customer stickness.
 
-On top of that, the benefit of supporting FIX becomes obvious.
+On top of that, the benefit of supporting FIX becomes obvious. First, it generates revenue for corporate insurers. Second, it helps corporate insurers adapt to the transition. Third, early participation via supporting the exchange earns corporate insurers more reputation and customer stickiness.
+
+In a word, from a dynamic and strategic perspective, it is beneficial for traditional corporate insurers to support FIX with their data.
 
