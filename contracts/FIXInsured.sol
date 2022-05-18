@@ -133,7 +133,7 @@ pickInsurerLottery
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract FIXInsurer is Ownable {
+contract FIXInsured is Ownable {
     enum POLICY_STATE {
         OPEN_UNVERIFIED,
         OPEN_VERIFIED,
@@ -148,16 +148,18 @@ contract FIXInsurer is Ownable {
         uint256 premiumUpper;
     }
 
-    premiumRange premium_range;
+    bool public premiumSet = false;
 
-    uint256 fixedLoss;
+    premiumRange public premium_range;
+
+    uint256 public fixedLoss;
     uint256 fixedLossPerInsurer;
 
-    uint256 EV_type;
+    uint256 public EV_type;
     uint256 EV_verified_count = 0;
     bool EV_final_result;
 
-    uint256 AV_type;
+    uint256 public AV_type;
     uint256 AV_verified_count = 0;
     bool AV_final_result;
 
@@ -215,6 +217,7 @@ contract FIXInsurer is Ownable {
         );
         premium_range.premiumLower = _premiumLower;
         premium_range.premiumUpper = _premiumUpper;
+        premiumSet = true;
     }
 
     function addEligibilityVerifier(address _eligibilityVerifier)
@@ -313,6 +316,10 @@ contract FIXInsurer is Ownable {
 
     function addPotentialInsurers(uint256 _premiumProposed) public payable {
         require(
+            premiumSet = true,
+            "The range of premium is not set yet. Wait for the insured to set the range."
+        );
+        require(
             (policy_state == POLICY_STATE.OPEN_VERIFIED) ||
                 (policy_state == POLICY_STATE.LOTTERY),
             "You cannot add a potential insurer for the lottery later"
@@ -388,7 +395,7 @@ contract FIXInsurer is Ownable {
                 insuredDeposit +
                 insurerSelectedPremium[insurerSelected[i]];
         }
-        msg.sender.transfer(
+        payable(msg.sender).transfer(
             insurerLimit * premium_range.premiumUpper - insuredDeposit
         );
         policy_state = POLICY_STATE.ACTIVE_POLICY;
@@ -458,7 +465,7 @@ contract FIXInsurer is Ownable {
             );
         }
         if (AV_final_result == true) {
-            msg.sender.transfer(fixedLoss);
+            payable(msg.sender).transfer(fixedLoss);
         } else {
             for (uint256 i = 0; i < insurerSelected.length; i++) {
                 payable(insurerSelected[i]).transfer(
