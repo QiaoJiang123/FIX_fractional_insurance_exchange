@@ -389,7 +389,7 @@ contract FIXInsurer is Ownable {
                 insurerSelectedPremium[insurerSelected[i]];
         }
         msg.sender.transfer(
-            insurerLimit * premiumRange.premiumUpper - insuredDeposit
+            insurerLimit * premium_range.premiumUpper - insuredDeposit
         );
         policy_state = POLICY_STATE.ACTIVE_POLICY;
     }
