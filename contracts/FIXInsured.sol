@@ -151,10 +151,15 @@ contract FIXInsurer is Ownable {
     premiumRange premium_range;
 
     uint256 fixedLoss;
+    uint256 fixedLossPerInsurer;
 
     uint256 EV_type;
     uint256 EV_verified_count = 0;
     bool EV_final_result;
+
+    uint256 AV_type;
+    uint256 AV_verified_count = 0;
+    bool AV_final_result;
 
     uint256 public potentialInsurerLimit;
     uint256 public insurerLimit;
@@ -177,6 +182,7 @@ contract FIXInsurer is Ownable {
 
     constructor(
         uint256 _EV_type,
+        uint256 _AV_type,
         uint256 _potentialInsurerLimit,
         uint256 _insurerLimit,
         uint256 _fixedLoss
@@ -185,10 +191,17 @@ contract FIXInsurer is Ownable {
             _EV_type == 1 || _EV_type == 2,
             "The type of eligibility verification can only be 1 or 2"
         );
+        require(
+            _AV_type == 1 || _AV_type == 2,
+            "The type of accident verification can only be 1 or 2"
+        );
+
         EV_type = _EV_type;
+        AV_type = _AV_type;
         potentialInsurerLimit = _potentialInsurerLimit;
         insurerLimit = _insurerLimit;
         fixedLoss = _fixedLoss;
+        fixedLossPerInsurer = _fixedLoss / _insurerLimit;
     }
 
     function setPremiumRange(uint256 _premiumLower, uint256 _premiumUpper)
@@ -314,7 +327,7 @@ contract FIXInsurer is Ownable {
                 (_premiumProposed <= premium_range.premiumUpper),
             "The proposed premium does not fall into the range. Please propose a new one!"
         );
-        require(msg.value == fixedLoss); // The deposit must be exactly the same amount as fixedLoss.
+        require(msg.value == fixedLossPerInsurer); // The deposit must be exactly the same amount as fixedLossPerInsurer.
         potentialInsurer.push(msg.sender);
         potentialInsurerDeposit[msg.sender] = msg.value;
         potentialInsurerPremium[msg.sender] = _premiumProposed;
@@ -395,6 +408,63 @@ contract FIXInsurer is Ownable {
             accidentVerifierResult[msg.sender] = "VERIFIED_POSITIVE";
         } else {
             accidentVerifierResult[msg.sender] = "VERIFIED_NEGATIVE";
+        }
+        AV_verified_count += 1;
+    }
+
+    function getAccidentFinalResult() public onlyOwner {
+        // AV_type == 1 means all verification must be positive (And)
+        // AV_type == 2 means at least one verification should be positive (Or)
+        require(
+            (AV_verified_count == accidentVerifier.length) &&
+                (policy_state == POLICY_STATE.ACTIVE_POLICY),
+            "Wait until all eligibility verifiers submit their verification or the policy is active."
+        );
+        bool AV_result;
+        if (AV_type == 1) {
+            AV_result = true;
+            // And
+            for (uint256 i = 0; i < accidentVerifier.length; i++) {
+                if (
+                    compareStrings(
+                        accidentVerifierResult[accidentVerifier[i]],
+                        "VERIFIED_NEGATIVE"
+                    ) == true
+                ) {
+                    AV_result = false;
+                    break;
+                }
+            }
+        } else {
+            AV_result = false;
+            // Or
+            for (uint256 i = 0; i < accidentVerifier.length; i++) {
+                if (
+                    compareStrings(
+                        accidentVerifierResult[accidentVerifier[i]],
+                        "VERIFIED_POSITIVE"
+                    ) == true
+                ) {
+                    AV_result = true;
+                    break;
+                }
+            }
+        }
+        AV_final_result = AV_result;
+        policy_state = POLICY_STATE.CLOSED;
+        for (uint256 i = 0; i < insurerSelected.length; i++) {
+            payable(insurerSelected[i]).transfer(
+                insurerSelectedPremium[insurerSelected[i]]
+            );
+        }
+        if (AV_final_result == true) {
+            msg.sender.transfer(fixedLoss);
+        } else {
+            for (uint256 i = 0; i < insurerSelected.length; i++) {
+                payable(insurerSelected[i]).transfer(
+                    insurerSelectedDeposit[insurerSelected[i]]
+                );
+            }
         }
     }
 
