@@ -345,7 +345,7 @@ contract FIXInsurer is Ownable {
         // After selection lottery is drawn, the actual premium will be calculated.
         // The excess of premium, tentative premium minus actual premium, will be returned to the insured.
         require(
-            msg.value == insurerLimit * premiumRange.premiumUpper,
+            msg.value == insurerLimit * premium_range.premiumUpper,
             "Insured should deposit enough money for insurer selection lottery."
         );
         address[] memory potentialInsurerTemp = potentialInsurer;
