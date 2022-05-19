@@ -1,6 +1,7 @@
 from scripts.help_scripts import get_account
 from brownie import accounts, FIXInsured
 import sha3
+import pandas as pd
 
 # use ganache-cli -a <number of accounts> to specify how many accounts needed for testing.
 # This test will be on local chain.
@@ -22,14 +23,54 @@ premiumLower = 10
 #
 # Eligibility verifier will use the keccak 256 hash result provided by the insured and compare it to its own database using the same hash. If
 
-information_combined = "Hello"
+first_name = "James"
+middle_name = ""
+last_name = "Jiang"
+confirmation_number = "ABC123"
+flight = "NB1234"
+flightDate = "2022-05-20"
 
+information_combined = [
+    first_name,
+    middle_name,
+    last_name,
+    confirmation_number,
+    flight,
+    flightDate,
+]
+information_combined = ",".join([x.strip().lower() for x in information_combined])
+print(information_combined)
 k = sha3.keccak_256()
 k.update(str.encode(information_combined))
-
 hashedInsuredInfo = k.hexdigest()
-flight = "ABC123"
-flightDate = "2022-05-12"
+
+
+def hash_keccak_256(string):
+    k = sha3.keccak_256()
+    k.update(str.encode(string))
+    return k.hexdigest()
+
+
+def eligibility_verification(hash_result, file_loc):
+    k = sha3.keccak_256()
+    df = pd.read_csv(file_loc)
+    df.fillna("", inplace=True)
+    df["hash_result"] = [
+        hash_keccak_256(",".join([str(y).strip().lower() for y in x[0]]))
+        for x in zip(
+            df[
+                [
+                    "first_name",
+                    "middle_name",
+                    "last_name",
+                    "confirmation_number",
+                    "flight",
+                    "flightDate",
+                ]
+            ].to_numpy()
+        )
+    ]
+    return hash_result in df["hash_result"].tolist()
 
 
 def deploy_fixinsured(
@@ -69,6 +110,9 @@ def deploy_fixinsured(
 
 
 def main():
+    print(
+        "==================================== STEP 1: DEPLOY FIXINSURED ===================================="
+    )
     fixinsured_contract = deploy_fixinsured(
         EV_type,
         AV_type,
@@ -86,6 +130,9 @@ def main():
         f"* * *  The potential insurer limit is {fixinsured_contract.potentialInsurerLimit()}.\n",
         f"* * *  The insurer limit is {fixinsured_contract.insurerLimit()}.\n",
         f"* * *  The fixed loss an insurer may be liable to is {fixinsured_contract.fixedLoss()}.",
+    )
+    print(
+        "==================================== STEP 2: INSURED ADD PREMIUM RANGE, EV, AND AV ===================================="
     )
     print("* * *  Add the range of premium.")
     fixinsured_contract.setPremiumRange(
@@ -111,9 +158,20 @@ def main():
     print(
         f"* * *  {fixinsured_contract.accidentVerifier(0)}, {fixinsured_contract.accidentVerifier(1)} have been added as eligibility verifiers"
     )
-    # Need to convert it to data based verification.
-    fixinsured_contract.verifyEligibility(True, {"from": accounts[1]})
-    fixinsured_contract.verifyEligibility(True, {"from": accounts[2]})
-
-    # for i in range(20):
-    #    print(accounts[i])
+    print(
+        "==================================== STEP 3: ELIGIBILITY VERIFICATION ===================================="
+    )
+    fixinsured_contract.verifyEligibility(
+        eligibility_verification(hashedInsuredInfo, "mock_data/mock_flight_data.csv"),
+        {"from": accounts[1]},
+    )
+    fixinsured_contract.verifyEligibility(
+        eligibility_verification(hashedInsuredInfo, "mock_data/mock_flight_data_2.csv"),
+        {"from": accounts[2]},
+    )
+    print(
+        f"* * *  The eligibility verification for each verifier is {fixinsured_contract.eligibilityVerifier(0)}, {fixinsured_contract.eligibilityVerifier(1)}."
+    )
+    print(
+        f"* * *  The eligibility verification for each verifier is {fixinsured_contract.eligibilityVerifierResult(fixinsured_contract.eligibilityVerifier(0))}, {fixinsured_contract.eligibilityVerifierResult(fixinsured_contract.eligibilityVerifier(1))}."
+    )
