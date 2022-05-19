@@ -1,5 +1,6 @@
 from scripts.help_scripts import get_account
 from brownie import accounts, FIXInsured
+import sha3
 
 # use ganache-cli -a <number of accounts> to specify how many accounts needed for testing.
 # This test will be on local chain.
@@ -12,8 +13,35 @@ fixedLoss = 300
 premiumUpper = 12
 premiumLower = 10
 
+# Flight information for eligibility verification
+# Insured need to provide three information:
+# 1. flight
+# 2. flight date
+# 3. keccak 256 hash result of information include first name, middle name, last name of the insured, confirmation number, flight, flight date.
+#    All elements are in string and lowercase, joined with comma.
+#
+# Eligibility verifier will use the keccak 256 hash result provided by the insured and compare it to its own database using the same hash. If
 
-def deploy_fixinsured(EV_type, AV_type, potentialInsurerLimit, insurerLimit, fixedLoss):
+information_combined = "Hello"
+
+k = sha3.keccak_256()
+k.update(str.encode(information_combined))
+
+hashedInsuredInfo = k.hexdigest()
+flight = "ABC123"
+flightDate = "2022-05-12"
+
+
+def deploy_fixinsured(
+    EV_type,
+    AV_type,
+    potentialInsurerLimit,
+    insurerLimit,
+    fixedLoss,
+    hashedInsuredInfo,
+    flight,
+    flightDate,
+):
     """
 
     This function deploy FIXInsured.sol
@@ -31,6 +59,9 @@ def deploy_fixinsured(EV_type, AV_type, potentialInsurerLimit, insurerLimit, fix
         potentialInsurerLimit,
         insurerLimit,
         fixedLoss,
+        hashedInsuredInfo,
+        flight,
+        flightDate,
         {"from": account},
     )
     print(f"The insurer {account} deployed the contract successfully.")
@@ -39,7 +70,14 @@ def deploy_fixinsured(EV_type, AV_type, potentialInsurerLimit, insurerLimit, fix
 
 def main():
     fixinsured_contract = deploy_fixinsured(
-        EV_type, AV_type, potentialInsurerLimit, insurerLimit, fixedLoss
+        EV_type,
+        AV_type,
+        potentialInsurerLimit,
+        insurerLimit,
+        fixedLoss,
+        hashedInsuredInfo,
+        flight,
+        flightDate,
     )
 
     print(
@@ -73,7 +111,7 @@ def main():
     print(
         f"* * *  {fixinsured_contract.accidentVerifier(0)}, {fixinsured_contract.accidentVerifier(1)} have been added as eligibility verifiers"
     )
-
+    # Need to convert it to data based verification.
     fixinsured_contract.verifyEligibility(True, {"from": accounts[1]})
     fixinsured_contract.verifyEligibility(True, {"from": accounts[2]})
 

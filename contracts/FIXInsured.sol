@@ -66,6 +66,16 @@ pragma solidity ^0.8.0;
     Fixed loss is the loss amount proposed by the insured. This applies to trip delay insurance where the insured knows how much he/she has paid for
     the ticket. This amount will also be verified by EV.
 
+@para hashedInsuredInfo
+
+    This parameter is a keccak256 hashed result of first name, middle name, last name of the insured, confirmation number, flight, flight date.
+    All elements are in string and lowercase, joined with comma.
+
+@para flight
+
+@para date
+
+
 
 Functions to include:
 
@@ -143,6 +153,10 @@ contract FIXInsured is Ownable {
         CLOSED
     }
 
+    string public hashedInsuredInfo;
+    string public flight;
+    string public flightDate;
+
     struct premiumRange {
         uint256 premiumLower;
         uint256 premiumUpper;
@@ -187,7 +201,10 @@ contract FIXInsured is Ownable {
         uint256 _AV_type,
         uint256 _potentialInsurerLimit,
         uint256 _insurerLimit,
-        uint256 _fixedLoss
+        uint256 _fixedLoss,
+        string memory _hashedInsuredInfo,
+        string memory _flight,
+        string memory _flightDate
     ) {
         require(
             _EV_type == 1 || _EV_type == 2,
@@ -204,6 +221,9 @@ contract FIXInsured is Ownable {
         insurerLimit = _insurerLimit;
         fixedLoss = _fixedLoss;
         fixedLossPerInsurer = _fixedLoss / _insurerLimit;
+        hashedInsuredInfo = _hashedInsuredInfo;
+        flight = _flight;
+        flightDate = _flightDate;
     }
 
     function setPremiumRange(uint256 _premiumLower, uint256 _premiumUpper)
