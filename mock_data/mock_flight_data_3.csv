@@ -1,5 +1,5 @@
-first_name,middle_name,last_name,confirmation_number,flight,flightDate
-James,,Jiang,ABC123,NB1234,2022-05-16
-Cindy,H,Xu,DEF456,SB4321,2022-05-19
-Lion,G,Pasta,GHI123,NB4321,2022-05-18
-Zebra,,Rock,JKL456,SB1234,2022-05-17
+first_name,middle_name,last_name,confirmation_number,flight,flightDate,ticket_price
+James,,Jiang,ABC123,NB1234,2022-05-16,567
+Cindy,H,Xu,DEF456,SB4321,2022-05-19,678
+Lion,G,Pasta,GHI123,NB4321,2022-05-18,890
+Zebra,,Rock,JKL456,SB1234,2022-05-17,123

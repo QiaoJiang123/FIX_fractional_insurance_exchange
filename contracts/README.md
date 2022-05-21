@@ -14,4 +14,4 @@ When a person wants to buy an insurance from FIX, it is necessary to deploy a sm
 7. flight: flight number
 8. flightDate: flight date
 
-The last two elements are used for easy searching when verifying flight delay.
+The last two elements are used for easy searching when verifying eligibility and flight delay.

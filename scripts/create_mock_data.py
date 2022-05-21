@@ -11,6 +11,7 @@ def main():
     df["confirmation_number"] = ["ABC123", "DEF456", "GHI123", "JKL456"]
     df["flight"] = ["NB1234", "SB4321", "NB4321", "SB1234"]
     df["flightDate"] = ["2022-05-20", "2022-05-19", "2022-05-18", "2022-05-17"]
+    df["ticket_price"] = [567, 678, 890, 123]
     df.to_csv("mock_data/mock_flight_data.csv", index=False)
 
     df_2 = pd.DataFrame()
@@ -20,6 +21,7 @@ def main():
     df_2["confirmation_number"] = ["ABC123", "DEF456", "GHI123", "JKL456"]
     df_2["flight"] = ["NB1234", "SB4321", "NB4321", "SB1234"]
     df_2["flightDate"] = ["2022-05-20", "2022-05-19", "2022-05-18", "2022-05-17"]
+    df_2["ticket_price"] = [567, 678, 890, 123]
 
     df_2.to_csv("mock_data/mock_flight_data_2.csv", index=False)
 
@@ -30,5 +32,5 @@ def main():
     df_3["confirmation_number"] = ["ABC123", "DEF456", "GHI123", "JKL456"]
     df_3["flight"] = ["NB1234", "SB4321", "NB4321", "SB1234"]
     df_3["flightDate"] = ["2022-05-16", "2022-05-19", "2022-05-18", "2022-05-17"]
-
+    df_3["ticket_price"] = [567, 678, 890, 123]
     df_3.to_csv("mock_data/mock_flight_data_3.csv", index=False)

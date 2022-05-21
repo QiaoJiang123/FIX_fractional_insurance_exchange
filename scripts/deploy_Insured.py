@@ -51,7 +51,7 @@ def hash_keccak_256(string):
     return k.hexdigest()
 
 
-def eligibility_verification(hash_result, file_loc):
+def eligibility_verification(hash_result, fixedLoss, file_loc):
     k = sha3.keccak_256()
     df = pd.read_csv(file_loc)
     df.fillna("", inplace=True)
@@ -70,7 +70,14 @@ def eligibility_verification(hash_result, file_loc):
             ].to_numpy()
         )
     ]
-    return hash_result in df["hash_result"].tolist()
+    if hash_result in df["hash_result"].tolist():
+        ticket_price = df[df["hash_result"] == hash_result]["ticket_price"].tolist()
+        return (
+            sum([fixedLoss >= x * 0.99 and fixedLoss <= 1.01 for x in ticket_price])
+            >= 1
+        )
+    else:
+        return False
 
 
 def deploy_fixinsured(
@@ -162,11 +169,19 @@ def main():
         "==================================== STEP 3: ELIGIBILITY VERIFICATION ===================================="
     )
     fixinsured_contract.verifyEligibility(
-        eligibility_verification(hashedInsuredInfo, "mock_data/mock_flight_data.csv"),
+        eligibility_verification(
+            fixinsured_contract.hashedInsuredInfo(),
+            fixinsured_contract.fixedLoss(),
+            "mock_data/mock_flight_data.csv",
+        ),
         {"from": accounts[1]},
     )
     fixinsured_contract.verifyEligibility(
-        eligibility_verification(hashedInsuredInfo, "mock_data/mock_flight_data_2.csv"),
+        eligibility_verification(
+            fixinsured_contract.hashedInsuredInfo(),
+            fixinsured_contract.fixedLoss(),
+            "mock_data/mock_flight_data_2.csv",
+        ),
         {"from": accounts[2]},
     )
     print(
