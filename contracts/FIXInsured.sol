@@ -139,7 +139,7 @@ pickInsurerLottery
 
 */
 
-// Add modifier for condition check
+// Add a time constraint on the smart contract. If no action is ever done after the flight date. All money if ever transferred to this smart contract will be sent back.
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -152,6 +152,12 @@ contract FIXInsured is Ownable {
         ACCIDENT_VERIFIED,
         CLOSED
     }
+    enum VERIFICATION_RESULT {
+        NOTADDED,
+        ADDED,
+        VERIFIED_NEGATIVE,
+        VERIFIED_POSITIVE
+    }
 
     string public hashedInsuredInfo;
     string public flight;
@@ -162,37 +168,31 @@ contract FIXInsured is Ownable {
         uint256 premiumUpper;
     }
 
-    bool public premiumSet = false;
-
     premiumRange public premium_range;
 
     uint256 public fixedLoss;
-    uint256 fixedLossPerInsurer;
 
     uint256 public EV_type;
     uint256 EV_verified_count = 0;
-    bool EV_final_result;
+    bool public EV_final_result;
 
     uint256 public AV_type;
     uint256 AV_verified_count = 0;
-    bool AV_final_result;
+    bool public AV_final_result;
 
     uint256 public potentialInsurerLimit;
     uint256 public insurerLimit;
-    mapping(address => uint256) public potentialInsurerDeposit;
-    mapping(address => uint256) public potentialInsurerPremium;
+    mapping(address => uint256[2]) public potentialInsurerDepositPremium;
 
     address[] public eligibilityVerifier;
-    mapping(address => string) public eligibilityVerifierResult;
+    mapping(address => VERIFICATION_RESULT) public eligibilityVerifierResult;
+
+    address[] public accidentVerifier;
+    mapping(address => VERIFICATION_RESULT) public accidentVerifierResult;
 
     address[] public potentialInsurer;
     address[] public insurerSelected;
-    mapping(address => uint256) public insurerSelectedDeposit;
-    mapping(address => uint256) public insurerSelectedPremium;
     uint256 public insuredDeposit;
-
-    address[] public accidentVerifier;
-    mapping(address => string) public accidentVerifierResult;
 
     POLICY_STATE public policy_state = POLICY_STATE.OPEN_UNVERIFIED;
 
@@ -220,7 +220,6 @@ contract FIXInsured is Ownable {
         potentialInsurerLimit = _potentialInsurerLimit;
         insurerLimit = _insurerLimit;
         fixedLoss = _fixedLoss;
-        fixedLossPerInsurer = _fixedLoss / _insurerLimit;
         hashedInsuredInfo = _hashedInsuredInfo;
         flight = _flight;
         flightDate = _flightDate;
@@ -235,9 +234,12 @@ contract FIXInsured is Ownable {
                 (policy_state == POLICY_STATE.OPEN_VERIFIED),
             "You cannot set premium range at this moment!"
         );
+        require(
+            (premium_range.premiumLower == 0),
+            "You have set premium range"
+        );
         premium_range.premiumLower = _premiumLower;
         premium_range.premiumUpper = _premiumUpper;
-        premiumSet = true;
     }
 
     function addEligibilityVerifier(address _eligibilityVerifier)
@@ -249,11 +251,13 @@ contract FIXInsured is Ownable {
             "Can't change Eligibility Verifier at this stage!"
         );
         require(
-            compareStrings(eligibilityVerifierResult[_eligibilityVerifier], ""),
+            eligibilityVerifierResult[_eligibilityVerifier] ==
+                VERIFICATION_RESULT.NOTADDED,
             "This eligibility verifier has been added."
         );
         eligibilityVerifier.push(_eligibilityVerifier);
-        eligibilityVerifierResult[_eligibilityVerifier] = "ADDED";
+        eligibilityVerifierResult[_eligibilityVerifier] = VERIFICATION_RESULT
+            .ADDED;
     }
 
     function addAccidentVerifier(address _accidentVerifier) public onlyOwner {
@@ -262,11 +266,12 @@ contract FIXInsured is Ownable {
             "Can't change Accident Verifier at this stage!"
         );
         require(
-            compareStrings(accidentVerifierResult[_accidentVerifier], ""),
+            accidentVerifierResult[_accidentVerifier] ==
+                VERIFICATION_RESULT.NOTADDED,
             "This accident verifier has been added."
         );
         accidentVerifier.push(_accidentVerifier);
-        accidentVerifierResult[_accidentVerifier] = "ADDED";
+        accidentVerifierResult[_accidentVerifier] = VERIFICATION_RESULT.ADDED;
     }
 
     function verifyEligibility(bool _verificationDummy) public {
@@ -277,13 +282,15 @@ contract FIXInsured is Ownable {
             "Can't change Eligibility Verification at this stage!"
         );
         require(
-            compareStrings(eligibilityVerifierResult[msg.sender], "ADDED"),
+            eligibilityVerifierResult[msg.sender] == VERIFICATION_RESULT.ADDED,
             "You are either not in the eligibility verifier list or have submitted your verification."
         );
         if (_verificationDummy == true) {
-            eligibilityVerifierResult[msg.sender] = "VERIFIED_POSITIVE";
+            eligibilityVerifierResult[msg.sender] = VERIFICATION_RESULT
+                .VERIFIED_POSITIVE;
         } else {
-            eligibilityVerifierResult[msg.sender] = "VERIFIED_NEGATIVE";
+            eligibilityVerifierResult[msg.sender] = VERIFICATION_RESULT
+                .VERIFIED_NEGATIVE;
         }
         EV_verified_count += 1;
     }
@@ -302,10 +309,8 @@ contract FIXInsured is Ownable {
             // And
             for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
                 if (
-                    compareStrings(
-                        eligibilityVerifierResult[eligibilityVerifier[i]],
-                        "VERIFIED_NEGATIVE"
-                    ) == true
+                    eligibilityVerifierResult[eligibilityVerifier[i]] ==
+                    VERIFICATION_RESULT.VERIFIED_NEGATIVE
                 ) {
                     EV_result = false;
                     break;
@@ -316,10 +321,8 @@ contract FIXInsured is Ownable {
             // Or
             for (uint256 i = 0; i < eligibilityVerifier.length; i++) {
                 if (
-                    compareStrings(
-                        eligibilityVerifierResult[eligibilityVerifier[i]],
-                        "VERIFIED_POSITIVE"
-                    ) == true
+                    eligibilityVerifierResult[eligibilityVerifier[i]] ==
+                    VERIFICATION_RESULT.VERIFIED_POSITIVE
                 ) {
                     EV_result = true;
                     break;
@@ -336,7 +339,7 @@ contract FIXInsured is Ownable {
 
     function addPotentialInsurers(uint256 _premiumProposed) public payable {
         require(
-            premiumSet = true,
+            premium_range.premiumLower > 0,
             "The range of premium is not set yet. Wait for the insured to set the range."
         );
         require(
@@ -345,7 +348,7 @@ contract FIXInsured is Ownable {
             "You cannot add a potential insurer for the lottery later"
         );
         require(
-            (potentialInsurerDeposit[msg.sender] == 0) &&
+            (potentialInsurerDepositPremium[msg.sender][0] == 0) &&
                 (potentialInsurer.length < potentialInsurerLimit),
             "You are in the list for the aution or no space is available."
         );
@@ -354,10 +357,10 @@ contract FIXInsured is Ownable {
                 (_premiumProposed <= premium_range.premiumUpper),
             "The proposed premium does not fall into the range. Please propose a new one!"
         );
-        require(msg.value == fixedLossPerInsurer); // The deposit must be exactly the same amount as fixedLossPerInsurer.
+        require(msg.value == fixedLoss / insurerLimit); // The deposit must be exactly the same amount as fixedLossPerInsurer.
         potentialInsurer.push(msg.sender);
-        potentialInsurerDeposit[msg.sender] = msg.value;
-        potentialInsurerPremium[msg.sender] = _premiumProposed;
+        potentialInsurerDepositPremium[msg.sender][0] = msg.value;
+        potentialInsurerDepositPremium[msg.sender][1] = _premiumProposed;
 
         if (potentialInsurer.length >= insurerLimit) {
             // Once there are enough potential insurers, the lottery can begin.
@@ -387,33 +390,28 @@ contract FIXInsured is Ownable {
                     )
                 )
             );
-            insurerSelected[i] = potentialInsurerTemp[
-                randomNumber % potentialInsurerTemp.length
-            ];
-
-            insurerSelectedDeposit[
-                insurerSelected[i]
-            ] = potentialInsurerDeposit[insurerSelected[i]];
-            potentialInsurerDeposit[insurerSelected[i]] = 0;
-
-            insurerSelectedPremium[
-                insurerSelected[i]
-            ] = potentialInsurerPremium[insurerSelected[i]];
+            insurerSelected.push(
+                potentialInsurerTemp[randomNumber % potentialInsurerTemp.length]
+            );
 
             delete potentialInsurerTemp[
                 randomNumber % potentialInsurerTemp.length
             ];
+            // potentialInsurerTemp only has insurers not being selected.
         }
         // Pay back to un-selected insurers
-        for (uint256 i = 0; i < insurerSelected.length; i++) {
-            payable(potentialInsurer[i]).transfer(
-                potentialInsurerDeposit[potentialInsurer[i]]
+        for (uint256 i = 0; i < potentialInsurerTemp.length; i++) {
+            // This loop pay back the deposit to insurer
+            payable(potentialInsurerTemp[i]).transfer(
+                potentialInsurerDepositPremium[potentialInsurerTemp[i]][0]
             );
+            delete potentialInsurerDepositPremium[potentialInsurerTemp[i]];
         }
-        for (uint256 i = 0; i < potentialInsurer.length; i++) {
+        for (uint256 i = 0; i < insurerSelected.length; i++) {
+            // This loop calculted how many premium insured should deposit based on selected insurers
             insuredDeposit =
                 insuredDeposit +
-                insurerSelectedPremium[insurerSelected[i]];
+                potentialInsurerDepositPremium[insurerSelected[i]][1];
         }
         payable(msg.sender).transfer(
             insurerLimit * premium_range.premiumUpper - insuredDeposit
@@ -428,13 +426,15 @@ contract FIXInsured is Ownable {
             "Can't change Accident Verification at this stage!"
         );
         require(
-            compareStrings(accidentVerifierResult[msg.sender], "ADDED"),
+            accidentVerifierResult[msg.sender] == VERIFICATION_RESULT.ADDED,
             "You are either not in the accident verifier list or have submitted your verification."
         );
         if (_verificationDummy == true) {
-            accidentVerifierResult[msg.sender] = "VERIFIED_POSITIVE";
+            accidentVerifierResult[msg.sender] = VERIFICATION_RESULT
+                .VERIFIED_POSITIVE;
         } else {
-            accidentVerifierResult[msg.sender] = "VERIFIED_NEGATIVE";
+            accidentVerifierResult[msg.sender] = VERIFICATION_RESULT
+                .VERIFIED_NEGATIVE;
         }
         AV_verified_count += 1;
     }
@@ -453,10 +453,8 @@ contract FIXInsured is Ownable {
             // And
             for (uint256 i = 0; i < accidentVerifier.length; i++) {
                 if (
-                    compareStrings(
-                        accidentVerifierResult[accidentVerifier[i]],
-                        "VERIFIED_NEGATIVE"
-                    ) == true
+                    accidentVerifierResult[accidentVerifier[i]] ==
+                    VERIFICATION_RESULT.VERIFIED_NEGATIVE
                 ) {
                     AV_result = false;
                     break;
@@ -467,10 +465,8 @@ contract FIXInsured is Ownable {
             // Or
             for (uint256 i = 0; i < accidentVerifier.length; i++) {
                 if (
-                    compareStrings(
-                        accidentVerifierResult[accidentVerifier[i]],
-                        "VERIFIED_POSITIVE"
-                    ) == true
+                    accidentVerifierResult[accidentVerifier[i]] ==
+                    VERIFICATION_RESULT.VERIFIED_POSITIVE
                 ) {
                     AV_result = true;
                     break;
@@ -481,7 +477,7 @@ contract FIXInsured is Ownable {
         policy_state = POLICY_STATE.CLOSED;
         for (uint256 i = 0; i < insurerSelected.length; i++) {
             payable(insurerSelected[i]).transfer(
-                insurerSelectedPremium[insurerSelected[i]]
+                potentialInsurerDepositPremium[insurerSelected[i]][1]
             );
         }
         if (AV_final_result == true) {
@@ -489,18 +485,9 @@ contract FIXInsured is Ownable {
         } else {
             for (uint256 i = 0; i < insurerSelected.length; i++) {
                 payable(insurerSelected[i]).transfer(
-                    insurerSelectedDeposit[insurerSelected[i]]
+                    potentialInsurerDepositPremium[insurerSelected[i]][0]
                 );
             }
         }
-    }
-
-    function compareStrings(string memory a, string memory b)
-        public
-        pure
-        returns (bool)
-    {
-        return (keccak256(abi.encodePacked((a))) ==
-            keccak256(abi.encodePacked((b))));
     }
 }

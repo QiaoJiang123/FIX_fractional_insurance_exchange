@@ -6,11 +6,20 @@ import pandas as pd
 # use ganache-cli -a <number of accounts> to specify how many accounts needed for testing.
 # This test will be on local chain.
 
+policy_state_dict = {
+    0: "OPEN_UNVERIFIED",
+    1: "OPEN_VERIFIED",
+    2: "LOTTERY",
+    3: "ACTIVE_POLICY",
+    4: "ACCIDENT_VERIFIED",
+    5: "CLOSED",
+}
+
 EV_type = 1
 AV_type = 1
 potentialInsurerLimit = 6
 insurerLimit = 3
-fixedLoss = 300
+fixedLoss = 567
 premiumUpper = 12
 premiumLower = 10
 
@@ -73,7 +82,7 @@ def eligibility_verification(hash_result, fixedLoss, file_loc):
     if hash_result in df["hash_result"].tolist():
         ticket_price = df[df["hash_result"] == hash_result]["ticket_price"].tolist()
         return (
-            sum([fixedLoss >= x * 0.99 and fixedLoss <= 1.01 for x in ticket_price])
+            sum([fixedLoss >= x * 0.99 and fixedLoss <= x * 1.01 for x in ticket_price])
             >= 1
         )
     else:
@@ -189,4 +198,108 @@ def main():
     )
     print(
         f"* * *  The eligibility verification for each verifier is {fixinsured_contract.eligibilityVerifierResult(fixinsured_contract.eligibilityVerifier(0))}, {fixinsured_contract.eligibilityVerifierResult(fixinsured_contract.eligibilityVerifier(1))}."
+    )
+
+    fixinsured_contract.getEligibilityFinalResult({"from": accounts[0]})
+    print(
+        f"* * *  The final result of eligibility verification is {fixinsured_contract.EV_final_result()}."
+    )
+    print(
+        f"* * *  The current status of this policy is {policy_state_dict[fixinsured_contract.policy_state()]}."
+    )
+    print(
+        "==================================== STEP 4: INSURER JOIN AND LOTTERY ===================================="
+    )
+    # To start this step, you need to have the policy state equals to OPEN_VERIFIED.
+    # 6 potential insurers will be added by themselves.
+    fixinsured_contract.addPotentialInsurers(
+        10,
+        {
+            "from": accounts[5],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    fixinsured_contract.addPotentialInsurers(
+        11,
+        {
+            "from": accounts[6],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    fixinsured_contract.addPotentialInsurers(
+        12,
+        {
+            "from": accounts[7],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    fixinsured_contract.addPotentialInsurers(
+        11,
+        {
+            "from": accounts[8],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    fixinsured_contract.addPotentialInsurers(
+        10,
+        {
+            "from": accounts[9],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    fixinsured_contract.addPotentialInsurers(
+        12,
+        {
+            "from": accounts[10],
+            "value": fixinsured_contract.fixedLoss()
+            / fixinsured_contract.insurerLimit(),
+        },
+    )
+    print(
+        f"* * *  The current status of this policy is {policy_state_dict[fixinsured_contract.policy_state()]}."
+    )
+    for i in range(6):
+        # print(f"The account {i+5} is {accounts[i+5]}")
+        print(
+            f"The {i+1}th potential insurer is {fixinsured_contract.potentialInsurer(i)}"
+        )
+
+    insuredPremiumDeposit = (
+        fixinsured_contract.insurerLimit() * fixinsured_contract.premium_range()[1]
+    )
+
+    fixinsured_contract.insurerSelectionLottery(
+        {"from": accounts[0], "value": insuredPremiumDeposit}
+    )
+    print(
+        f"* * *  The current status of this policy is {policy_state_dict[fixinsured_contract.policy_state()]}."
+    )
+    for i in range(3):
+        print(
+            f"The {i+1}th selected insurer is {fixinsured_contract.insurerSelected(i)}"
+        )
+        print(
+            f"The premium of this insurer is {fixinsured_contract.potentialInsurerDepositPremium(fixinsured_contract.insurerSelected(i),1)}"
+        )
+    print(fixinsured_contract.insuredDeposit())
+    print(
+        f"* * *  The current status of this policy is {policy_state_dict[fixinsured_contract.policy_state()]}."
+    )
+    print(
+        "==================================== STEP 5: VERIFY ACCIDENT ===================================="
+    )
+    # In this step, assume accident is verified successfully.
+    fixinsured_contract.verifyAccident(True, {"from": accounts[3]})
+    fixinsured_contract.verifyAccident(True, {"from": accounts[4]})
+    fixinsured_contract.getAccidentFinalResult()
+    print(
+        f"* * *  The final result for accident verification is {fixinsured_contract.AV_final_result()}"
+    )
+    print(
+        f"* * *  The current status of this policy is {policy_state_dict[fixinsured_contract.policy_state()]}."
     )
