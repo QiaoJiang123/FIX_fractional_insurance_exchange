@@ -353,8 +353,8 @@ contract FIXInsured is Ownable {
             "You are in the list for the aution or no space is available."
         );
         require(
-            (_premiumProposed >= premium_range.premiumLower) &&
-                (_premiumProposed <= premium_range.premiumUpper),
+            (_premiumProposed >= premium_range.premiumLower / insurerLimit) &&
+                (_premiumProposed <= premium_range.premiumUpper / insurerLimit),
             "The proposed premium does not fall into the range. Please propose a new one!"
         );
         require(msg.value == fixedLoss / insurerLimit); // The deposit must be exactly the same amount as fixedLossPerInsurer.
@@ -375,7 +375,7 @@ contract FIXInsured is Ownable {
         // After selection lottery is drawn, the actual premium will be calculated.
         // The excess of premium, tentative premium minus actual premium, will be returned to the insured.
         require(
-            msg.value == insurerLimit * premium_range.premiumUpper,
+            msg.value == premium_range.premiumUpper,
             "Insured should deposit enough money for insurer selection lottery."
         );
         address[] memory potentialInsurerTemp = potentialInsurer;
@@ -414,7 +414,7 @@ contract FIXInsured is Ownable {
                 potentialInsurerDepositPremium[insurerSelected[i]][1];
         }
         payable(msg.sender).transfer(
-            insurerLimit * premium_range.premiumUpper - insuredDeposit
+            premium_range.premiumUpper - insuredDeposit
         );
         policy_state = POLICY_STATE.ACTIVE_POLICY;
     }
