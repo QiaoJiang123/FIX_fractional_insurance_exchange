@@ -1,0 +1,5 @@
+first_name,middle_name,last_name,confirmation_number,flight,flightDate,ticket_price,delay
+James,,Jiang,ABC123,NB1234,2022-05-16,567,True
+Cindy,H,Xu,DEF456,SB4321,2022-05-19,678,False
+Lion,G,Pasta,GHI123,NB4321,2022-05-18,890,True
+Zebra,,Rock,JKL456,SB1234,2022-05-17,123,False

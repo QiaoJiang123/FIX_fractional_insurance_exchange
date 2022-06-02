@@ -142,6 +142,7 @@ pickInsurerLottery
 // Add a time constraint on the smart contract. If no action is ever done after the flight date. All money if ever transferred to this smart contract will be sent back.
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "https://github.com/bokkypoobah/BokkyPooBahsDateTimeLibrary/blob/master/contracts/BokkyPooBahsDateTimeLibrary.sol";
 
 contract FIXInsured is Ownable {
     enum POLICY_STATE {
@@ -196,6 +197,8 @@ contract FIXInsured is Ownable {
 
     POLICY_STATE public policy_state = POLICY_STATE.OPEN_UNVERIFIED;
 
+    uint256 public returnFundTimeStamp;
+
     constructor(
         uint256 _EV_type,
         uint256 _AV_type,
@@ -223,6 +226,7 @@ contract FIXInsured is Ownable {
         hashedInsuredInfo = _hashedInsuredInfo;
         flight = _flight;
         flightDate = _flightDate;
+        returnFundTimeStamp = getTimeStamp(flightDate);
     }
 
     function setPremiumRange(uint256 _premiumLower, uint256 _premiumUpper)
@@ -488,6 +492,64 @@ contract FIXInsured is Ownable {
                     potentialInsurerDepositPremium[insurerSelected[i]][0]
                 );
             }
+        }
+    }
+
+    function getSlice(
+        uint256 begin,
+        uint256 end,
+        string memory text
+    ) public pure returns (string memory) {
+        bytes memory a = new bytes(end - begin + 1);
+        for (uint256 i = 0; i <= end - begin; i++) {
+            a[i] = bytes(text)[i + begin - 1];
+        }
+        return string(a);
+    }
+
+    function stringToInt(string memory numString)
+        public
+        pure
+        returns (uint256)
+    {
+        uint256 val = 0;
+        bytes memory stringBytes = bytes(numString);
+        for (uint256 i = 0; i < stringBytes.length; i++) {
+            uint256 exp = stringBytes.length - i;
+            bytes1 ival = stringBytes[i];
+            uint8 uval = uint8(ival);
+            uint256 jval = uval - uint256(0x30);
+
+            val += (uint256(jval) * (10**(exp - 1)));
+        }
+        return val;
+    }
+
+    function getTimeStamp(string memory _flightDate) public returns (uint256) {
+        return
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(
+                stringToInt(getSlice(1, 4, _flightDate)),
+                stringToInt(getSlice(6, 7, _flightDate)),
+                stringToInt(getSlice(9, 10, _flightDate))
+            ) + BokkyPooBahsDateTimeLibrary.SECONDS_PER_DAY;
+    }
+
+    function overTimeRefund() public {
+        // If the policy is not closed until one day after flight date. All money can be returned to each participant.
+        require(
+            returnFundTimeStamp <= bloc.now,
+            "Refund is not allowed. Please wait until one day after the flight date.s"
+        );
+        require(policy_state != POLICY_STATE.CLOSED, "This policy is closed");
+        for (uint256 i = 0; i < insurerSelected.length; i++) {
+            // pay back deposit
+            payable(insurerSelected[i]).transfer(
+                potentialInsurerDepositPremium[insurerSelected[i]][0]
+            );
+            // pay back premium
+            payable(owner()).transfer(
+                potentialInsurerDepositPremium[insurerSelected[i]][1]
+            );
         }
     }
 }

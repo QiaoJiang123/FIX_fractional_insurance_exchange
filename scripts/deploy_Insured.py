@@ -89,6 +89,32 @@ def eligibility_verification(hash_result, fixedLoss, file_loc):
         return False
 
 
+def accident_verification(hash_result, file_loc):
+    k = sha3.keccak_256()
+    df = pd.read_csv(file_loc)
+    df.fillna("", inplace=True)
+    df["hash_result"] = [
+        hash_keccak_256(",".join([str(y).strip().lower() for y in x[0]]))
+        for x in zip(
+            df[
+                [
+                    "first_name",
+                    "middle_name",
+                    "last_name",
+                    "confirmation_number",
+                    "flight",
+                    "flightDate",
+                ]
+            ].to_numpy()
+        )
+    ]
+    if hash_result in df["hash_result"].tolist():
+        delay_result = df[df["hash_result"] == hash_result]["delay"].tolist()
+        return sum(delay_result) >= 1
+    else:
+        return False
+
+
 def deploy_fixinsured(
     EV_type,
     AV_type,
@@ -213,7 +239,7 @@ def main():
     # To start this step, you need to have the policy state equals to OPEN_VERIFIED.
     # 6 potential insurers will be added by themselves.
     fixinsured_contract.addPotentialInsurers(
-        10,
+        10 / insurerLimit,
         {
             "from": accounts[5],
             "value": fixinsured_contract.fixedLoss()
@@ -221,7 +247,7 @@ def main():
         },
     )
     fixinsured_contract.addPotentialInsurers(
-        11,
+        11 / insurerLimit,
         {
             "from": accounts[6],
             "value": fixinsured_contract.fixedLoss()
@@ -229,7 +255,7 @@ def main():
         },
     )
     fixinsured_contract.addPotentialInsurers(
-        12,
+        12 / insurerLimit,
         {
             "from": accounts[7],
             "value": fixinsured_contract.fixedLoss()
@@ -237,7 +263,7 @@ def main():
         },
     )
     fixinsured_contract.addPotentialInsurers(
-        11,
+        11 / insurerLimit,
         {
             "from": accounts[8],
             "value": fixinsured_contract.fixedLoss()
@@ -245,7 +271,7 @@ def main():
         },
     )
     fixinsured_contract.addPotentialInsurers(
-        10,
+        10 / insurerLimit,
         {
             "from": accounts[9],
             "value": fixinsured_contract.fixedLoss()
@@ -253,7 +279,7 @@ def main():
         },
     )
     fixinsured_contract.addPotentialInsurers(
-        12,
+        12 / insurerLimit,
         {
             "from": accounts[10],
             "value": fixinsured_contract.fixedLoss()
@@ -269,9 +295,7 @@ def main():
             f"The {i+1}th potential insurer is {fixinsured_contract.potentialInsurer(i)}"
         )
 
-    insuredPremiumDeposit = (
-        fixinsured_contract.insurerLimit() * fixinsured_contract.premium_range()[1]
-    )
+    insuredPremiumDeposit = fixinsured_contract.premium_range()[1]
 
     fixinsured_contract.insurerSelectionLottery(
         {"from": accounts[0], "value": insuredPremiumDeposit}
@@ -294,8 +318,20 @@ def main():
         "==================================== STEP 5: VERIFY ACCIDENT ===================================="
     )
     # In this step, assume accident is verified successfully.
-    fixinsured_contract.verifyAccident(True, {"from": accounts[3]})
-    fixinsured_contract.verifyAccident(True, {"from": accounts[4]})
+    fixinsured_contract.verifyAccident(
+        accident_verification(
+            fixinsured_contract.hashedInsuredInfo(),
+            "mock_data/mock_flight_delay_data_1.csv",
+        ),
+        {"from": accounts[3]},
+    )
+    fixinsured_contract.verifyAccident(
+        accident_verification(
+            fixinsured_contract.hashedInsuredInfo(),
+            "mock_data/mock_flight_delay_data_2.csv",
+        ),
+        {"from": accounts[4]},
+    )
     fixinsured_contract.getAccidentFinalResult()
     print(
         f"* * *  The final result for accident verification is {fixinsured_contract.AV_final_result()}"
