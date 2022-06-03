@@ -318,6 +318,7 @@ def main():
         "==================================== STEP 5: VERIFY ACCIDENT ===================================="
     )
     # In this step, assume accident is verified successfully.
+    print("The first AC is verifying")
     fixinsured_contract.verifyAccident(
         accident_verification(
             fixinsured_contract.hashedInsuredInfo(),
@@ -325,6 +326,7 @@ def main():
         ),
         {"from": accounts[3]},
     )
+    print("The second AC is verifying")
     fixinsured_contract.verifyAccident(
         accident_verification(
             fixinsured_contract.hashedInsuredInfo(),
@@ -332,7 +334,7 @@ def main():
         ),
         {"from": accounts[4]},
     )
-    fixinsured_contract.getAccidentFinalResult()
+    fixinsured_contract.getAccidentFinalResult({"from": accounts[0]})
     print(
         f"* * *  The final result for accident verification is {fixinsured_contract.AV_final_result()}"
     )

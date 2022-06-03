@@ -142,7 +142,7 @@ pickInsurerLottery
 // Add a time constraint on the smart contract. If no action is ever done after the flight date. All money if ever transferred to this smart contract will be sent back.
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "https://github.com/bokkypoobah/BokkyPooBahsDateTimeLibrary/blob/master/contracts/BokkyPooBahsDateTimeLibrary.sol";
+import "./BokkyPooBahsDateTimeLibrary.sol";
 
 contract FIXInsured is Ownable {
     enum POLICY_STATE {
@@ -443,7 +443,7 @@ contract FIXInsured is Ownable {
         AV_verified_count += 1;
     }
 
-    function getAccidentFinalResult() public onlyOwner {
+    function getAccidentFinalResult() public payable onlyOwner {
         // AV_type == 1 means all verification must be positive (And)
         // AV_type == 2 means at least one verification should be positive (Or)
         require(
@@ -537,7 +537,7 @@ contract FIXInsured is Ownable {
     function overTimeRefund() public {
         // If the policy is not closed until one day after flight date. All money can be returned to each participant.
         require(
-            returnFundTimeStamp <= bloc.now,
+            returnFundTimeStamp <= block.timestamp,
             "Refund is not allowed. Please wait until one day after the flight date.s"
         );
         require(policy_state != POLICY_STATE.CLOSED, "This policy is closed");
