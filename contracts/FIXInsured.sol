@@ -242,6 +242,10 @@ contract FIXInsured is Ownable {
             (premium_range.premiumLower == 0),
             "You have set premium range"
         );
+        require(
+            (_premiumLower <= _premiumUpper),
+            "Premium upper limit should be larger than premium lower limit."
+        );
         premium_range.premiumLower = _premiumLower;
         premium_range.premiumUpper = _premiumUpper;
     }
@@ -478,7 +482,6 @@ contract FIXInsured is Ownable {
             }
         }
         AV_final_result = AV_result;
-        policy_state = POLICY_STATE.CLOSED;
         for (uint256 i = 0; i < insurerSelected.length; i++) {
             payable(insurerSelected[i]).transfer(
                 potentialInsurerDepositPremium[insurerSelected[i]][1]
@@ -493,6 +496,7 @@ contract FIXInsured is Ownable {
                 );
             }
         }
+        policy_state = POLICY_STATE.CLOSED;
     }
 
     function getSlice(
